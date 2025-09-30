@@ -12,13 +12,14 @@ function Login() {
 
     try {
       // 백엔드 로그인 API 호출 (URL은 실제 주소로 바꿔주세요)
-      const res = await axios.post("http://localhost:8080/api/login", {
+      const res = await axios.post("http://localhost:8080/auth", {
         email,
         password,
       });
 
       // 응답 성공 처리 (예: 토큰 저장)
-      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("accessToken", res.data.accessToken);
+      localStorage.setItem("refreshToken", res.data.refreshToken);
       alert("로그인 성공!");
       console.log("로그인 성공:", res.data);
     } catch (err) {
