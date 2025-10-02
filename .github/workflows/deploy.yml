@@ -1,0 +1,41 @@
+name: Deploy Frontend
+
+# 언제 실행할지 (트리거)
+on:
+  push:
+    branches: [ "main" ]   # main 브랜치에 push될 때마다 실행
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest   # GitHub이 제공하는 Ubuntu VM에서 실행
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3   # GitHub repo 코드 가져오기
+
+    - name: Build Docker image
+      run: docker build -t frontend-app .
+
+    - name: Save image to tar
+      run: docker save frontend-app -o frontend-app.tar
+
+    - name: Copy image to EC2
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_KEY }}
+        source: "frontend-app.tar"
+        target: "~/"
+
+    - name: Deploy on EC2
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_KEY }}
+        script: |
+          docker load -i frontend-app.tar
+          docker stop frontend || true
+          docker rm frontend || true
+          docker run -d -p 80:80 --name frontend frontend-app
