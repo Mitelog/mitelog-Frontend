@@ -9,11 +9,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 코드 체크아웃
+      # 1. 코드 가져오기
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Docker 이미지 빌드
+      # 2. 프론트엔드 Docker 이미지 빌드
       - name: Build Docker image
         run: docker build -t frontend-app .
 
