@@ -25,35 +25,23 @@ jobs:
       - name: Fix permission
         run: chmod 644 frontend-app.tar
 
-      # 5. PEM 키 파일 생성
-      - name: Write PEM key to file
-        run: |
-          echo "${{ secrets.EC2_KEY }}" > "${{ github.workspace }}/frontend-key.pem"
-          chmod 644 "${{ github.workspace }}/frontend-key.pem"
-
-      # 6. EC2_HOST 정제 (혹시 모를 개행 제거)
-      - id: sanitize
-        run: |
-          H=$(printf "%s" "${{ secrets.EC2_HOST }}" | tr -d '\r\n\t ')
-          echo "host=$H" >> "$GITHUB_OUTPUT"
-
-      # 7. EC2로 이미지 복사
+      # 5. EC2로 이미지 복사
       - name: Copy image to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ steps.sanitize.outputs.host }}
+          host: ${{ secrets.EC2_HOST }}
           username: ubuntu
-          key_path: ${{ github.workspace }}/frontend-key.pem
+          key: ${{ secrets.EC2_KEY }}
           source: "./frontend-app.tar"
           target: "~/"
 
-      # 8. EC2에서 컨테이너 실행
+      # 6. EC2에서 컨테이너 실행
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ steps.sanitize.outputs.host }}
+          host: ${{ secrets.EC2_HOST }}
           username: ubuntu
-          key_path: ${{ github.workspace }}/frontend-key.pem
+          key: ${{ secrets.EC2_KEY }}
           script: |
             docker load -i frontend-app.tar
             docker stop frontend || true
