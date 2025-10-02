@@ -28,7 +28,7 @@ jobs:
       # 5. PEM 키 파일 생성
       - name: Write PEM key to file
         run: |
-          printf "%s" "${{ secrets.EC2_KEY }}" > "${{ github.workspace }}/frontend-key.pem"
+          echo "${{ secrets.EC2_KEY }}" > "${{ github.workspace }}/frontend-key.pem"
           chmod 644 "${{ github.workspace }}/frontend-key.pem"
 
       # 6. EC2_HOST 정제 (혹시 모를 개행 제거)
