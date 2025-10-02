@@ -12,7 +12,7 @@ function Login() {
 
     try {
       // 백엔드 로그인 API 호출 (URL은 실제 주소로 바꿔주세요)
-      const res = await axios.post("http://localhost:8080/auth", {
+      const res = await axios.post("http://3.34.143.239:8080/auth", {
         email,
         password,
       });
