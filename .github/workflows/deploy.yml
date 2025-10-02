@@ -2,46 +2,52 @@ name: Deploy Frontend
 
 on:
   push:
-    branches: ["main"] # main 브랜치에 push될 때 실행 (필요시 develop도 추가)
+    branches: ["main"] # main 브랜치 push 시 실행 (필요하면 develop도 추가 가능)
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 코드 체크아웃
+      # 1. 코드 가져오기
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Docker 이미지 빌드
+      # 2. 프론트엔드 Docker 이미지 빌드
       - name: Build Docker image
         run: docker build -t frontend-app .
 
-      # 3. 이미지 tar 파일로 저장
+      # 3. Docker 이미지 tar 파일로 저장
       - name: Save image to tar
         run: docker save frontend-app -o frontend-app.tar
 
-      # 4. 권한 수정 (여기서 Permission denied 문제 해결)
+      # 4. 권한 수정 (권한 문제 방지)
       - name: Fix permission
         run: chmod 644 frontend-app.tar
 
-      # 5. EC2로 이미지 복사
+      # 5. Secrets에 있는 PEM 키를 파일로 저장 (frontend-key.pem)
+      - name: Save PEM key
+        run: |
+          echo "${{ secrets.EC2_KEY }}" > frontend-key.pem
+          chmod 600 frontend-key.pem
+
+      # 6. EC2로 이미지 전송
       - name: Copy image to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
-          key: ${{ secrets.EC2_KEY }}
+          key_path: frontend-key.pem # 🔑 key 대신 key_path 사용
           source: "./frontend-app.tar"
           target: "~/"
 
-      # 6. EC2에서 컨테이너 실행
+      # 7. EC2에서 컨테이너 실행
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
-          key: ${{ secrets.EC2_KEY }}
+          key_path: frontend-key.pem # 🔑 똑같이 key_path 사용
           script: |
             docker load -i frontend-app.tar
             docker stop frontend || true
