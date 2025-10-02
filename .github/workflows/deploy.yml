@@ -2,7 +2,7 @@ name: Deploy Frontend
 
 on:
   push:
-    branches: ["main"] # main 브랜치에 push될 때 실행 (필요시 develop도 추가)
+    branches: ["main"]
 
 jobs:
   build-and-deploy:
@@ -17,31 +17,51 @@ jobs:
       - name: Build Docker image
         run: docker build -t frontend-app .
 
-      # 3. 이미지 tar 파일로 저장
+      # 3. Docker 이미지를 tar 파일로 저장
       - name: Save image to tar
         run: docker save frontend-app -o frontend-app.tar
 
-      # 4. 권한 수정 (여기서 Permission denied 문제 해결)
-      - name: Fix permission
+      # 4. tar 권한 조정 (읽기 가능하도록)
+      - name: Relax tar permission
         run: chmod 644 frontend-app.tar
 
-      # 5. EC2로 이미지 복사
+      # 5. Secrets에 있는 PEM 키를 파일로 생성
+      - name: Write PEM key to file
+        run: |
+          printf "%s" "${{ secrets.EC2_KEY }}" > "${{ github.workspace }}/frontend-key.pem"
+          chmod 600 "${{ github.workspace }}/frontend-key.pem"
+
+      # 6. EC2_HOST 값 정제 (개행/스페이스 제거)
+      - id: sanitize
+        name: Sanitize EC2_HOST
+        run: |
+          H=$(printf "%s" "${{ secrets.EC2_HOST }}" | tr -d '\r\n\t ')
+          echo "host=$H" >> "$GITHUB_OUTPUT"
+
+      # 7. Debug (옵션) - 호스트 값 길이 확인
+      - name: Debug secrets shape
+        run: |
+          echo "HOST -> |${{ secrets.EC2_HOST }}|"
+          echo "HOST LEN -> $(printf '%s' '${{ secrets.EC2_HOST }}' | wc -c)"
+          echo "KEY LINES -> $(awk 'END{print NR}' <<< '${{ secrets.EC2_KEY }}')"
+
+      # 8. EC2로 tar 파일 복사
       - name: Copy image to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.EC2_HOST }}
+          host: ${{ steps.sanitize.outputs.host }}
           username: ubuntu
-          key: ${{ secrets.EC2_KEY }}
-          source: "./frontend-app.tar"
-          target: "~/"
+          key_path: ${{ github.workspace }}/frontend-key.pem
+          source: ./frontend-app.tar
+          target: ~/
 
-      # 6. EC2에서 컨테이너 실행
+      # 9. EC2에서 컨테이너 실행
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.EC2_HOST }}
+          host: ${{ steps.sanitize.outputs.host }}
           username: ubuntu
-          key: ${{ secrets.EC2_KEY }}
+          key_path: ${{ github.workspace }}/frontend-key.pem
           script: |
             docker load -i frontend-app.tar
             docker stop frontend || true
