@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";  // API 요청용
+import axios from "axios"; // API 요청용
 import "../styles/login.css";
 
 function Login() {
@@ -57,7 +57,9 @@ function Login() {
 
         {error && <p className="error-msg">{error}</p>}
 
-        <button type="submit" className="login-btn">ログイン</button>
+        <button type="submit" className="login-btn">
+          ログイン
+        </button>
       </form>
     </div>
   );
