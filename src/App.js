@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Login from "./pages/Login"; // 방금 만든 Login 컴포넌트
+import Login from "./pages/Login"; 
+import Signup from "./pages/Singup";
 import "./App.css";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
 
             {/* 로그인 화면 */}
             <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
           </Routes>
         </main>
 
