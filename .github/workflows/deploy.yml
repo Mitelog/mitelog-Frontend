@@ -9,23 +9,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 코드 체크아웃
+      # 1️⃣ 코드 체크아웃
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Docker 이미지 빌드
+      # 2️⃣ Docker 이미지 빌드
       - name: Build Docker image
         run: docker build -t frontend-app .
 
-      # 3. 이미지 tar 파일로 저장
+      # 3️⃣ 이미지 tar 파일로 저장
       - name: Save image to tar
         run: docker save frontend-app -o frontend-app.tar
 
-      # 4. 권한 수정
+      # 4️⃣ 권한 수정
       - name: Fix permission
         run: chmod 644 frontend-app.tar
 
-      # 5. EC2로 이미지 복사
+      # 5️⃣ EC2로 이미지 복사
       - name: Copy image to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -35,7 +35,7 @@ jobs:
           source: "./frontend-app.tar"
           target: "~/"
 
-      # 6. EC2에서 컨테이너 실행
+      # 6️⃣ EC2에서 컨테이너 실행
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v0.1.7
         with:
