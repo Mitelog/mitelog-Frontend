@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios, { AxiosResponse } from "axios";
+import { useNavigate } from "react-router-dom";
 import "../styles/login.css";
 
 // ✅ 백엔드 응답 타입 정의
@@ -14,6 +15,8 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
+
+  const navigate = useNavigate();
 
   // 이벤트 핸들러 타입 지정
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -30,6 +33,7 @@ const Login: React.FC = () => {
       localStorage.setItem("refreshToken", res.data.refreshToken);
 
       alert("ログイン成功！");
+      navigate("/", { replace: true });
       console.log("로그인 성공:", res.data);
     } catch (err) {
       console.error("로그인 실패:", err);
