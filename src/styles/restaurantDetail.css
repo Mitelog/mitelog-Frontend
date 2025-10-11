@@ -1,0 +1,46 @@
+.restaurant-detail-container {
+  padding: 2rem;
+  max-width: 700px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.detail-title {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+
+.address,
+.phone,
+.description {
+  margin: 0.5rem 0;
+}
+
+.meta {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: gray;
+}
+
+.edit-btn {
+  margin-top: 1.5rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #ffb74d;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.edit-btn:hover {
+  background-color: #ffa726;
+}
+
+.loading,
+.error {
+  text-align: center;
+  margin-top: 2rem;
+}
