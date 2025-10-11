@@ -21,19 +21,26 @@ const RestaurantList: React.FC = () => {
   const isLoggedIn = !!localStorage.getItem("accessToken");
 
   useEffect(() => {
-    const fetchRestaurants = async () => {
-      try {
-        const res = await axiosApi.get("/restaurants");
-        setRestaurants(res.data);
-      } catch (err) {
-        console.error("식당 목록 조회 실패:", err);
-        setError("データの取得に失敗しました。");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchRestaurants();
-  }, []);
+  const fetchRestaurants = async () => {
+    try {
+      const res = await axiosApi.get("/restaurants");
+
+      // ✅ 응답 구조 확인 후 올바른 데이터만 설정
+      const restaurantList = Array.isArray(res.data)
+        ? res.data
+        : res.data.data;
+
+      setRestaurants(restaurantList || []);
+    } catch (err) {
+      console.error("식당 목록 조회 실패:", err);
+      setError("データの取得に失敗しました。");
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchRestaurants();
+}, []);
+
 
   if (loading) return <p className="loading">読み込み中...</p>;
   if (error) return <p className="error">{error}</p>;
