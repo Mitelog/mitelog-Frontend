@@ -34,8 +34,8 @@ const RestaurantForm: React.FC = () => {
     const fetchRestaurant = async () => {
       try {
         const res = await axiosApi.get(`/restaurants/${id}`);
-        const { name, address, phone, description } = res.data;
-        setFormData({ name, address, phone, description });
+        const { name, address, area, phone, description } = res.data;
+        setFormData({ name, address, area, phone, description });
       } catch (err) {
         console.error("식당 데이터 로드 실패:", err);
         setError("店舗情報の読み込みに失敗しました。");
