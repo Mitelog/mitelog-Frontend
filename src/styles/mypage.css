@@ -1,0 +1,178 @@
+/* ✅ 전체 컨테이너 */
+.mypage-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+/* ✅ 상단 배너 */
+.mypage-header .banner {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, #111, #000);
+}
+
+/* ✅ 프로필 + 요약박스 한 줄 배치 */
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 40px;
+  position: relative;
+  top: -60px; /* 배너 위로 오도록 */
+}
+
+/* ✅ 왼쪽 프로필 */
+.profile-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-photo {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  object-fit: cover;
+}
+
+.profile-text h2 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.profile-text p {
+  color: #888;
+  margin-top: 4px;
+}
+
+/* ✅ 마이페이지 설정 버튼 */
+.edit-btn {
+  margin-left: 20px;
+  padding: 8px 14px;
+  background-color: #ff6600;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.edit-btn:hover {
+  background-color: #ff8533;
+}
+
+/* ✅ 오른쪽 요약 박스 */
+.profile-right {
+  margin-top: 10px;
+}
+
+.mypage-summary {
+  width: 180px;
+  background: #f7f7f7;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #333;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+/* ✅ 탭 메뉴 */
+.mypage-tabs {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  background: #fafafa;
+  padding: 12px 0;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.tab span {
+  display: block;
+  font-size: 14px;
+  color: #555;
+}
+
+.tab strong {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.tab.active {
+  border-bottom: 3px solid #ff6600;
+  color: #ff6600;
+}
+
+/* ✅ 콘텐츠 영역 */
+.mypage-content {
+  padding: 30px 40px;
+}
+
+.mypage-content h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.mypage-content p {
+  color: #555;
+  line-height: 1.6;
+}
+
+/* ✅ 로딩/에러 텍스트 */
+.loading-text,
+.error-text {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+/* ✅ 반응형 대응 */
+@media (max-width: 768px) {
+  .profile-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-right {
+    margin-top: 20px;
+  }
+
+  .mypage-summary {
+    width: 220px;
+  }
+
+  .mypage-tabs {
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    flex: 1 1 50%;
+  }
+}

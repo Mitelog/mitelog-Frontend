@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import axios, { AxiosResponse } from "axios";
+import axiosInstance from "../api/axiosInstance";
 import "../styles/signup.css";
 
-// ✅ 회원가입 요청 DTO
 interface SignupRequest {
   email: string;
   password: string;
@@ -10,35 +9,27 @@ interface SignupRequest {
   phone: string;
 }
 
-// ✅ 백엔드 응답 구조 (필요 시 조정 가능)
 interface SignupResponse {
   status?: number;
   msg?: string;
   data?: any;
 }
 
-// ✅ 컴포넌트
 const Signup: React.FC = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [name, setName] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [error, setError] = useState("");
 
-  // ✅ 폼 제출 함수
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const payload: SignupRequest = {
-      email,
-      password,
-      name,
-      phone,
-    };
+    const payload: SignupRequest = { email, password, name, phone };
 
     try {
-      const res: AxiosResponse<SignupResponse> = await axios.post(
-        "http://52.78.21.91:8080/api/members/register",
+      const res = await axiosInstance.post<SignupResponse>(
+        "/api/members/register", // ✅ baseURL 
         payload
       );
 
@@ -61,9 +52,7 @@ const Signup: React.FC = () => {
           <input
             type="email"
             value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setEmail(e.target.value)
-            }
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="example@email.com"
             required
           />
@@ -74,9 +63,7 @@ const Signup: React.FC = () => {
           <input
             type="password"
             value={password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setPassword(e.target.value)
-            }
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="********"
             required
           />
@@ -87,9 +74,7 @@ const Signup: React.FC = () => {
           <input
             type="text"
             value={name}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setName(e.target.value)
-            }
+            onChange={(e) => setName(e.target.value)}
             placeholder="山田太郎"
             required
           />
@@ -100,9 +85,7 @@ const Signup: React.FC = () => {
           <input
             type="tel"
             value={phone}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setPhone(e.target.value)
-            }
+            onChange={(e) => setPhone(e.target.value)}
             placeholder="010-1234-5678"
           />
         </div>
