@@ -5,7 +5,8 @@ import "../styles/restaurantForm.css";
 
 interface RestaurantFormData {
   name: string;
-  address: string;
+  address: string,
+  area: string,
   phone?: string;
   description?: string;
 }
@@ -18,6 +19,7 @@ const RestaurantForm: React.FC = () => {
   const [formData, setFormData] = useState<RestaurantFormData>({
     name: "",
     address: "",
+    area: "",
     phone: "",
     description: "",
   });
@@ -97,6 +99,18 @@ const RestaurantForm: React.FC = () => {
             name="address"
             value={formData.address}
             onChange={handleChange}
+            required
+          />
+        </label>
+
+        <label>
+          エリア（地域）
+          <input
+            type="text"
+            name="area"
+            value={formData.area}
+            onChange={handleChange}
+            placeholder="例: 大邱広域市"
             required
           />
         </label>
