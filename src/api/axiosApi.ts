@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 
 const axiosApi: AxiosInstance = axios.create({
-  baseURL: "http://52.78.21.91:8080/api",
+  baseURL: "52.78.21.91:8080/api",
   headers: { "Content-Type": "application/json" },
 });
 
@@ -9,6 +9,7 @@ const axiosApi: AxiosInstance = axios.create({
 axiosApi.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem("accessToken");
+    console.log("🧩 axiosApi 요청 직전 accessToken:", token);
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
   },

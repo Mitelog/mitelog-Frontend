@@ -5,7 +5,7 @@ import "../styles/restaurantForm.css";
 
 interface RestaurantFormData {
   name: string;
-  address: string,
+  address: string;
   area: string,
   phone?: string;
   description?: string;
@@ -62,6 +62,7 @@ const RestaurantForm: React.FC = () => {
         await axiosApi.put(`/restaurants/${id}`, formData);
         alert("店舗情報を更新しました。");
       } else {
+        console.log("📦 보낼 formData:", formData);
         await axiosApi.post("/restaurants", formData);
         alert("新しいレストランを登録しました。");
       }
@@ -102,7 +103,7 @@ const RestaurantForm: React.FC = () => {
             required
           />
         </label>
-
+        
         <label>
           エリア（地域）
           <input

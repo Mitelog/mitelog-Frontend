@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: "http://52.78.21.91:8080", // 백엔드 주소
+  baseURL: "52.78.21.91:8080", // 백엔드 주소
   headers: {
     "Content-Type": "application/json",
   },
@@ -24,7 +24,7 @@ axiosInstance.interceptors.response.use(
     const status = error.response?.status;
 
     if (status === 401) {
-      alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+      alert("세션이 만료되었습니다. 다시 로그인해주세요.1");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       window.location.href = "/login";
