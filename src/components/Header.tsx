@@ -51,10 +51,15 @@ const Header: React.FC = () => {
 
         <div className="header-utils">
           {isLoggedIn ? (
-            // ✅ 로그인 상태 → 로그아웃 버튼만 표시
+            // ✅ 로그인 상태 → 로그아웃 / 마이페이지 표시
+            <>
             <a href="/logout" className="login-link" onClick={handleLogout}>
               ログアウト
+            </a> 
+            <a href="/mypage" className="mypage-link">
+              マイページ
             </a>
+            </>
           ) : (
             // ✅ 로그아웃 상태 → 로그인 / 회원가입 표시
             <>
