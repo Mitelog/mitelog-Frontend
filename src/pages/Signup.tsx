@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axiosInstance from "../api/axiosInstance";
+import axiosAuth from "../api/axiosAuth";
 import "../styles/signup.css";
 
 interface SignupRequest {
@@ -28,7 +28,7 @@ const Signup: React.FC = () => {
     const payload: SignupRequest = { email, password, name, phone };
 
     try {
-      const res = await axiosInstance.post<SignupResponse>(
+      const res = await axiosAuth.post<SignupResponse>(
         "/api/members/register", // ✅ baseURL 
         payload
       );

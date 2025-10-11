@@ -1,7 +1,7 @@
 // src/pages/RestaurantList.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../api/axiosInstance";
+import axiosApi from "../api/axiosApi";
 import "../styles/restaurantList.css";
 
 interface Restaurant {
@@ -23,7 +23,7 @@ const RestaurantList: React.FC = () => {
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const res = await axiosInstance.get("/restaurants");
+        const res = await axiosApi.get("/restaurants");
         setRestaurants(res.data);
       } catch (err) {
         console.error("식당 목록 조회 실패:", err);

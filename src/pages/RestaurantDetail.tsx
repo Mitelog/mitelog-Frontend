@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axiosInstance from "../api/axiosInstance";
+import axiosApi from "../api/axiosApi";
 import "../styles/restaurantDetail.css";
 
 // ✅ 백엔드에서 받아올 데이터 구조
@@ -30,7 +30,7 @@ const RestaurantDetail: React.FC = () => {
   useEffect(() => {
     const fetchRestaurant = async () => {
       try {
-        const res = await axiosInstance.get(`/restaurants/${id}`);
+        const res = await axiosApi.get(`/restaurants/${id}`);
         setRestaurant(res.data);
       } catch (err) {
         console.error("식당 상세 조회 실패:", err);
