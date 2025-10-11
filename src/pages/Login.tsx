@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../api/axiosInstance"; // ✅ 공용 axios 사용
+import axiosAuth from "../api/axiosAuth"; // ✅ 공용 axios 사용
 import "../styles/login.css";
 
 interface LoginResponse {
@@ -18,7 +18,7 @@ const Login: React.FC = () => {
     e.preventDefault();
 
     try {
-      const res = await axiosInstance.post<LoginResponse>("/auth", {
+      const res = await axiosAuth.post<LoginResponse>("/auth", {
         email,
         password,
       });

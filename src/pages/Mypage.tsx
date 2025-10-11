@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axiosInstance from "../api/axiosInstance";
+import axiosApi from "../api/axiosApi";
 import "../styles/mypage.css";
 import MypageHeader from "../components/MypageHeader";
 import MypageTabs from "../components/MypageTabs";
@@ -23,8 +23,8 @@ const Mypage: React.FC = () => {
   >("review");
 
   useEffect(() => {
-    axiosInstance
-      .get("/api/mypage/profile")
+    axiosApi
+      .get("/mypage/profile")
       .then((res) => setProfile(res.data.data))
       .catch((err) => console.error(err));
   }, []);

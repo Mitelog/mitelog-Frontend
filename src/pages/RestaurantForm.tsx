@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axiosInstance from "../api/axiosInstance";
+import axiosApi from "../api/axiosApi";
 import "../styles/restaurantForm.css";
 
 interface RestaurantFormData {
@@ -31,7 +31,7 @@ const RestaurantForm: React.FC = () => {
 
     const fetchRestaurant = async () => {
       try {
-        const res = await axiosInstance.get(`/restaurants/${id}`);
+        const res = await axiosApi.get(`/restaurants/${id}`);
         const { name, address, phone, description } = res.data;
         setFormData({ name, address, phone, description });
       } catch (err) {
@@ -57,10 +57,10 @@ const RestaurantForm: React.FC = () => {
 
     try {
       if (isEditMode) {
-        await axiosInstance.put(`/restaurants/${id}`, formData);
+        await axiosApi.put(`/restaurants/${id}`, formData);
         alert("店舗情報を更新しました。");
       } else {
-        await axiosInstance.post("/restaurants", formData);
+        await axiosApi.post("/restaurants", formData);
         alert("新しいレストランを登録しました。");
       }
 
