@@ -48,3 +48,36 @@ textarea {
   text-align: center;
   margin-top: 2rem;
 }
+
+/* ✅ 카테고리 선택 영역 스타일 추가 */
+.category-section {
+  margin-top: 1.5rem;
+}
+
+.category-section p {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.category-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 6px 10px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.category-item:hover {
+  background-color: #eef;
+  border-color: #88a;
+}
