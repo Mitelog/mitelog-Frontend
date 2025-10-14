@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosApi from "../api/axiosApi";
-import FilterSidebar from "../components/Sidebar/FilterSidebar";
+import FilterSidebar from "../components/sidebar/FilterSidebar";
 import "../styles/restaurantList.css";
 
 interface Restaurant {
