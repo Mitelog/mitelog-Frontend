@@ -13,9 +13,7 @@ const RestaurantContent: React.FC<Props> = ({ restaurant, activeTab }) => {
     <div className="restaurant-content">
       {activeTab === "main" && <RestaurantMain restaurant={restaurant} />}
       {activeTab === "menu" && <RestaurantMenu restaurantId={restaurant.id} />}
-      {activeTab === "review" && (
-        <RestaurantReview restaurantId={restaurant.id} />
-      )}
+      {activeTab === "review" && <RestaurantReview restaurantId={restaurant.id} />}
     </div>
   );
 };
