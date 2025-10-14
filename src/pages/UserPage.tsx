@@ -70,9 +70,11 @@ const UserPage: React.FC = () => {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
       .then((res) => {
-        console.log("✅ 공개 프로필 응답:", res.data);
-        setProfile(res.data);
-        setIsFollowed(res.data.isFollowed);
+        const data = res.data.data; // ✅ data 변수 선언
+        console.log("✅ 공개 프로필 응답:", data);
+
+        setProfile(data);
+        setIsFollowed(data.isFollowed ?? data.followed); // ✅ 여기서 안전하게 처리
       })
       .catch((err) => {
         console.error("❌ 공개 프로필 불러오기 실패:", err);
