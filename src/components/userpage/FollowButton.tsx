@@ -1,6 +1,6 @@
 import React from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axiosApi from "../../api/axiosApi"; // ✅ 커스텀 axios 인스턴스 사용
 
 interface Props {
   targetId: number;
@@ -21,19 +21,17 @@ const FollowButton: React.FC<Props> = ({ targetId, isFollowed, setIsFollowed }) 
 
     try {
       if (isFollowed) {
-        await axios.delete(`/api/follows/${targetId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        // ✅ 언팔로우 요청
+        await axiosApi.delete(`/follows/${targetId}`);
         setIsFollowed(false);
       } else {
-        await axios.post(`/api/follows/${targetId}`, {}, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        // ✅ 팔로우 요청
+        await axiosApi.post(`/follows/${targetId}`);
         setIsFollowed(true);
       }
     } catch (err) {
-      console.error("팔로우 처리 실패:", err);
-      alert("오류가 발생했습니다.");
+      console.error("❌ 팔로우 처리 실패:", err);
+      alert("팔로우 처리 중 오류가 발생했습니다.");
     }
   };
 

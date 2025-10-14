@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosApi from "../../api/axiosApi"; // ✅ 수정
 import "../../styles/followModal.css";
 
 interface FollowUser {
@@ -19,14 +19,10 @@ const FollowListModal: React.FC<Props> = ({ userId, type, onClose }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-
-    axios
-      .get(`/api/follow/${type}/${userId}`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      })
+    axiosApi
+      .get(`/follow/${type}/${userId}`) // ✅ baseURL 자동 (/api 포함)
       .then((res) => {
-        setList(res.data.data);
+        setList(res.data.data || []);
       })
       .catch((err) => console.error("❌ 목록 불러오기 실패:", err))
       .finally(() => setLoading(false));
