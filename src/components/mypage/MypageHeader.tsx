@@ -8,15 +8,17 @@ interface Props {
     profileImage?: string | null;
     reviewCount: number;
     bookmarkCount: number;
+    followerCount: number;
+    followingCount: number;
   };
+  onOpenModal: (type: "followers" | "following") => void; // ✅ 추가
 }
 
-const MypageHeader: React.FC<Props> = ({ profile }) => {
+const MypageHeader: React.FC<Props> = ({ profile, onOpenModal }) => {
   return (
     <div className="mypage-header">
       <div className="banner"></div>
 
-      {/* ✅ 프로필 + 요약 박스 같은 행으로 배치 */}
       <div className="profile-row">
         <div className="profile-left">
           <img
@@ -27,7 +29,24 @@ const MypageHeader: React.FC<Props> = ({ profile }) => {
           <div className="profile-text">
             <h2>{profile.name}</h2>
             <p>{profile.email}</p>
+
+            {/* ✅ 클릭 시 모달 열기 */}
+            <div className="follow-stats">
+              <span
+                onClick={() => onOpenModal("followers")}
+                className="clickable"
+              >
+                フォロワー: {profile.followerCount}
+              </span>
+              <span
+                onClick={() => onOpenModal("following")}
+                className="clickable"
+              >
+                フォロー中: {profile.followingCount}
+              </span>
+            </div>
           </div>
+
           <button className="edit-btn">マイページの設定</button>
         </div>
 

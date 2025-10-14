@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
+import FollowListModal from "../common/FollowListModal";
 import "../../styles/userpage.css";
 
 interface Props {
   profile: {
+    id: number;
     name: string;
     email: string;
     profileImage?: string | null;
@@ -14,6 +16,8 @@ interface Props {
 }
 
 const UserHeader: React.FC<Props> = ({ profile }) => {
+  const [openType, setOpenType] = useState<"followers" | "following" | null>(null);
+
   return (
     <div className="user-header">
       <div className="banner"></div>
@@ -27,6 +31,16 @@ const UserHeader: React.FC<Props> = ({ profile }) => {
           <div className="profile-text">
             <h2>{profile.name}</h2>
             <p>{profile.email}</p>
+
+            {/* ✅ 팔로워 / 팔로잉 카운트 클릭 가능 */}
+            <div className="follow-stats">
+              <span onClick={() => setOpenType("followers")}>
+                フォロワー: {profile.followerCount}
+              </span>
+              <span onClick={() => setOpenType("following")}>
+                フォロー中: {profile.followingCount}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -36,17 +50,18 @@ const UserHeader: React.FC<Props> = ({ profile }) => {
               <span>리뷰</span>
               <strong>{profile.reviewCount}</strong>
             </div>
-            <div>
-              <span>팔로워</span>
-              <strong>{profile.followerCount}</strong>
-            </div>
-            <div>
-              <span>팔로잉</span>
-              <strong>{profile.followingCount}</strong>
-            </div>
           </div>
         </div>
       </div>
+
+      {/* ✅ 모달 표시 */}
+      {openType && (
+        <FollowListModal
+          userId={profile.id}
+          type={openType}
+          onClose={() => setOpenType(null)}
+        />
+      )}
     </div>
   );
 };

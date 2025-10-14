@@ -51,6 +51,25 @@
   margin-top: 4px;
 }
 
+/* ✅ 👇 추가: 팔로워 / 팔로잉 표시 스타일 */
+.follow-stats {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #444;
+}
+
+.follow-stats span {
+  cursor: pointer;
+  transition: color 0.2s, transform 0.1s;
+}
+
+.follow-stats span:hover {
+  color: #ff6600;
+  transform: scale(1.05);
+}
+
 /* ✅ 마이페이지 설정 버튼 */
 .edit-btn {
   margin-left: 20px;
@@ -174,5 +193,11 @@
 
   .tab {
     flex: 1 1 50%;
+  }
+
+  /* ✅ follow-stats 모바일 정렬 */
+  .follow-stats {
+    justify-content: center;
+    margin-top: 6px;
   }
 }
