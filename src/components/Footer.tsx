@@ -24,7 +24,7 @@ const Footer: React.FC = () => {
 
         <div className="footer-logo">
           <a href="/">
-            <img src="./images/mitelog-logo.png" alt="食べログ" />
+            <img src="/images/mitelog-logo.png" alt="食べログ" />
           </a>
         </div>
 
