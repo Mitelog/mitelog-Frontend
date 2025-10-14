@@ -20,7 +20,7 @@ const Header: React.FC = () => {
     localStorage.removeItem("refreshToken");
     setIsLoggedIn(false);
     alert("ログアウトしました。");
-    navigate("/"); // ✅ 메인 페이지로 이동
+    navigate("/");
   };
 
   return (
@@ -28,7 +28,7 @@ const Header: React.FC = () => {
       <div className="header-inner">
         <div className="header-logo">
           <a href="/">
-            <img src="/logo192.png" alt="食べログ" />
+            <img src="./images/mitelog-logo.png" alt="食べログ" />
           </a>
         </div>
 
@@ -43,9 +43,6 @@ const Header: React.FC = () => {
             <li>
               <a href="/review">口コミ</a>
             </li>
-            <li>
-              <a href="/map">地図</a>
-            </li>
           </ul>
         </nav>
 
@@ -53,12 +50,12 @@ const Header: React.FC = () => {
           {isLoggedIn ? (
             // ✅ 로그인 상태 → 로그아웃 / 마이페이지 표시
             <>
-            <a href="/logout" className="login-link" onClick={handleLogout}>
-              ログアウト
-            </a> 
-            <a href="/mypage" className="mypage-link">
-              マイページ
-            </a>
+              <a href="/logout" className="login-link" onClick={handleLogout}>
+                ログアウト
+              </a>
+              <a href="/mypage" className="mypage-link">
+                マイページ
+              </a>
             </>
           ) : (
             // ✅ 로그아웃 상태 → 로그인 / 회원가입 표시
