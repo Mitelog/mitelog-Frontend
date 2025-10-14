@@ -5,9 +5,10 @@ import Footer from "./components/Footer";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Mypage from "./pages/Mypage";
-import RestaurantList from "./pages/RestaurantList"; // ✅ 추가
-import RestaurantDetail from "./pages/RestaurantDetail"; // ✅ 추가 
-import RestaurantForm from "./pages/RestaurantForm"; // ✅ 추가 
+import RestaurantList from "./pages/RestaurantList";
+import RestaurantDetail from "./pages/RestaurantDetail";
+import RestaurantForm from "./pages/RestaurantForm";
+import MainPage from "./components/MainPage";
 import "./App.css";
 
 const App: React.FC = () => {
@@ -19,15 +20,7 @@ const App: React.FC = () => {
         <main>
           <Routes>
             {/* 홈 화면 */}
-            <Route
-              path="/"
-              element={
-                <>
-                  <h1>Hello React 🚀</h1>
-                  <p>이건 CRA(App.tsx)에서 만든 메인 영역입니다.</p>
-                </>
-              }
-            />
+            <Route path="/" element={<MainPage />} />
 
             {/* 로그인 화면 */}
             <Route path="/login" element={<Login />} />
