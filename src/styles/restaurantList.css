@@ -1,55 +1,108 @@
-.restaurant-list-container {
-  padding: 2rem;
+.restaurant-page {
+  display: flex;
+  max-width: 1200px;
+  margin: 40px auto;
+  gap: 24px;
 }
 
-.page-title {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.restaurant-list {
-  list-style: none;
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  padding: 0;
-}
-
-.restaurant-item {
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 1rem;
+/* --- 사이드바 --- */
+.filter-sidebar {
+  width: 25%;
+  border-right: 1px solid #ddd;
+  padding: 20px;
+  position: sticky;
+  top: 80px;
   background-color: #fff;
-  transition: 0.2s;
+  height: fit-content;
+}
+
+.filter-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.filter-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.apply-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #f9a825;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
 }
 
-.restaurant-item:hover {
-  background-color: #f6f6f6;
+.apply-btn:hover {
+  background-color: #f57f17;
 }
 
-.owner {
-  font-size: 0.9rem;
-  color: gray;
+/* --- 메인 리스트 --- */
+.restaurant-main {
+  width: 75%;
+  padding: 20px;
 }
 
-.loading,
-.error {
-  text-align: center;
-  margin-top: 2rem;
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .register-btn {
-  margin-bottom: 1rem;
-  padding: 0.6rem 1.2rem;
-  background-color: #4caf50;
-  color: #fff;
+  background-color: #0071c2;
+  color: white;
   border: none;
-  border-radius: 8px;
+  padding: 8px 14px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: 0.2s;
 }
 
 .register-btn:hover {
-  background-color: #43a047;
+  background-color: #005da3;
+}
+
+.restaurant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.restaurant-card {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px;
+  background-color: #fff;
+  transition: box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.restaurant-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.restaurant-name {
+  font-size: 18px;
+  color: #0040a0;
+  margin-bottom: 4px;
 }
