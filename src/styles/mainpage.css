@@ -24,7 +24,7 @@
   inset: 0;
   background-size: cover;
   background-position: center;
-  filter: brightness(0.72) saturate(1.05);
+  filter: brightness(0.85) saturate(1.05);
 }
 
 .main-visual__inner {
