@@ -4,10 +4,10 @@ interface Props {
   restaurantId: number;
 }
 
-const RestaurantReview: React.FC<Props> = ({ restaurantId }) => {
+const RestaurantReview: React.FC<Props> = () => {
   return (
-    <div style={{ textAlign: "center", padding: "40px" }}>
-      <p>レビュー機能は現在準備中です 🍣</p>
+    <div className="restaurant-review">
+      <p>レビュー機能は現在準備中です。</p>
     </div>
   );
 };

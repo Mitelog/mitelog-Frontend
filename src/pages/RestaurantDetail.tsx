@@ -3,30 +3,36 @@ import { useParams, useNavigate } from "react-router-dom";
 import axiosApi from "../api/axiosApi";
 import "../styles/restaurantDetail.css";
 
-// ✅ 백엔드에서 받아올 데이터 구조
+import RestaurantHeader from "../components/restaurant_detail/RestaurantHeader";
+import RestaurantTabs from "../components/restaurant_detail/RestaurantTabs";
+import RestaurantContent from "../components/restaurant_detail/RestaurantContent";
+
 interface RestaurantDetailData {
   id: number;
   name: string;
   address: string;
   description?: string;
   phone?: string;
-  ownerId: number; // 가게 주인 ID
+  ownerId: number;
   ownerName?: string;
   createdAt?: string;
   updatedAt?: string;
+  rating?: number;
+  reviewCount?: number;
+  categoryNames?: string[];
+  imageUrl?: string;
 }
 
 const RestaurantDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // URL 파라미터 (예: /restaurants/5)
+  const { id } = useParams<{ id: string }>();
   const [restaurant, setRestaurant] = useState<RestaurantDetailData | null>(null);
+  const [activeTab, setActiveTab] = useState<"main" | "menu" | "review">("main");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // ✅ 현재 로그인한 사용자 ID (JWT 기반, 나중에 실제 decode 로직 추가 가능)
-  const loggedInUserId = localStorage.getItem("memberId"); // 로그인 시 저장한다고 가정
+  const loggedInUserId = localStorage.getItem("memberId");
 
-  // ✅ 식당 상세 조회 API
   useEffect(() => {
     const fetchRestaurant = async () => {
       try {
@@ -39,38 +45,31 @@ const RestaurantDetail: React.FC = () => {
         setLoading(false);
       }
     };
-
     fetchRestaurant();
   }, [id]);
 
-  const handleEditClick = () => {
-    navigate(`/restaurants/edit/${restaurant?.id}`);
-  };
-
-  if (loading) return <p className="loading">読み込み中...</p>;
-  if (error) return <p className="error">{error}</p>;
+  if (loading) return <p className="loading-text">読み込み中...</p>;
+  if (error) return <p className="error-text">{error}</p>;
   if (!restaurant) return <p>レストラン情報が見つかりません。</p>;
 
   const isOwner = loggedInUserId && Number(loggedInUserId) === restaurant.ownerId;
 
-  return (
-    <div className="restaurant-detail-container">
-      <h2 className="detail-title">{restaurant.name}</h2>
-      <p className="address">📍 {restaurant.address}</p>
-      {restaurant.phone && <p className="phone">📞 {restaurant.phone}</p>}
-      {restaurant.description && (
-        <p className="description">{restaurant.description}</p>
-      )}
+  const handleEditClick = () => {
+    navigate(`/restaurants/edit/${restaurant.id}`);
+  };
 
-      <div className="meta">
-        <p>オーナー: {restaurant.ownerName || "非公開"}</p>
-        <p>登録日: {restaurant.createdAt?.slice(0, 10)}</p>
-      </div>
+  return (
+    <div className="restaurant-container">
+      <RestaurantHeader restaurant={restaurant} />
+      <RestaurantTabs restaurant={restaurant} activeTab={activeTab} setActiveTab={setActiveTab} />
+      <RestaurantContent restaurant={restaurant} activeTab={activeTab} />
 
       {isOwner && (
-        <button className="edit-btn" onClick={handleEditClick}>
-          ✏️ 店舗情報を編集
-        </button>
+        <div className="edit-section">
+          <button className="edit-btn" onClick={handleEditClick}>
+            ✏️ 店舗情報を編集
+          </button>
+        </div>
       )}
     </div>
   );

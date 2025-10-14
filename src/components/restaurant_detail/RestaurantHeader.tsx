@@ -1,39 +1,26 @@
 import React from "react";
 
 interface Props {
-  restaurant: {
-    name: string;
-    rating?: number;
-    categoryNames?: string[];
-    imageUrl?: string;
-  };
+  restaurant: any;
 }
 
 const RestaurantHeader: React.FC<Props> = ({ restaurant }) => {
   return (
     <div className="restaurant-header">
-      <div
-        className="banner"
-        style={{
-          backgroundImage: `url(${
-            restaurant.imageUrl || "/default-restaurant.jpg"
-          })`,
-        }}
-      />
-      <div className="restaurant-info">
-        <div>
-          <h2 className="restaurant-title">{restaurant.name}</h2>
+      <div className="banner"></div>
+      <div className="header-content">
+        <img
+          src={restaurant.imageUrl || "/images/default-restaurant.jpg"}
+          alt={restaurant.name}
+          className="restaurant-image"
+        />
+        <div className="header-text">
+          <h2>{restaurant.name}</h2>
+          <p>{restaurant.address}</p>
           {restaurant.categoryNames && (
-            <p className="restaurant-subtitle">
-              {restaurant.categoryNames.join(" / ")}
-            </p>
+            <p className="categories">{restaurant.categoryNames.join(", ")}</p>
           )}
         </div>
-        {restaurant.rating !== undefined && (
-          <div className="restaurant-rating">
-            ⭐ {restaurant.rating.toFixed(1)}
-          </div>
-        )}
       </div>
     </div>
   );
