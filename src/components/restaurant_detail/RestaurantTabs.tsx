@@ -1,31 +1,33 @@
 import React from "react";
 
 interface Props {
-  restaurant: any;
+  restaurant: {
+    reviewCount?: number;
+  };
   activeTab: "main" | "menu" | "review";
   setActiveTab: React.Dispatch<React.SetStateAction<"main" | "menu" | "review">>;
 }
 
-const RestaurantTabs: React.FC<Props> = ({ activeTab, setActiveTab }) => {
+const RestaurantTabs: React.FC<Props> = ({ restaurant, activeTab, setActiveTab }) => {
   return (
     <div className="restaurant-tabs">
       <div
         className={`tab ${activeTab === "main" ? "active" : ""}`}
         onClick={() => setActiveTab("main")}
       >
-        メイン
+        <span>メイン</span>
       </div>
       <div
         className={`tab ${activeTab === "menu" ? "active" : ""}`}
         onClick={() => setActiveTab("menu")}
       >
-        メニュー
+        <span>メニュー</span>
       </div>
       <div
         className={`tab ${activeTab === "review" ? "active" : ""}`}
         onClick={() => setActiveTab("review")}
       >
-        レビュー
+        <span>口コミ ({restaurant.reviewCount ?? 0})</span>
       </div>
     </div>
   );
