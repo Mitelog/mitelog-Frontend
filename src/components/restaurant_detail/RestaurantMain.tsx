@@ -1,5 +1,5 @@
 import React from "react";
-import "./RestaurantMain.css"; // 별도 스타일 분리
+import "./RestaurantMain.css"; // 표 디자인용 CSS (이전 버전 그대로 사용)
 
 interface Props {
   restaurant: {
@@ -41,27 +41,46 @@ const RestaurantMain: React.FC<Props> = ({ restaurant }) => {
           <tr>
             <th>주소</th>
             <td>
-              {restaurant.address}
-              <div className="map-placeholder">
-                {/* 실제로는 Google Maps or Kakao Map 삽입 */}
-                <iframe
-                  title="map"
-                  src="https://maps.google.com/maps?q=Fukuoka&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                  width="100%"
-                  height="250"
-                  style={{ border: 0, borderRadius: "8px", marginTop: "8px" }}
-                ></iframe>
-              </div>
+              {restaurant.address || "주소 미등록"}
+
+              {/* ✅ 주소가 있으면 지도 표시 */}
+              {restaurant.address ? (
+                <div className="map-placeholder">
+                  <iframe
+                    title="restaurant-map"
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                      restaurant.address
+                    )}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                    width="100%"
+                    height="250"
+                    style={{
+                      border: 0,
+                      borderRadius: "8px",
+                      marginTop: "8px",
+                    }}
+                    loading="lazy"
+                  ></iframe>
+                </div>
+              ) : (
+                <p className="no-map-text">등록된 주소가 없습니다.</p>
+              )}
             </td>
           </tr>
           <tr>
             <th>영업시간</th>
             <td>
-              <ul className="open-hours">
-                <li>월·화·수·목·금: 16:00 - 04:00</li>
-                <li>토·일·공휴일: 12:00 - 04:00</li>
-              </ul>
-              <p className="note">※ 22시 이후 이용 시 10% 요금 추가됩니다.</p>
+              {restaurant.openHours ? (
+                <ul className="open-hours">
+                  {restaurant.openHours.map((hour, index) => (
+                    <li key={index}>{hour}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>영업시간 정보가 없습니다.</p>
+              )}
+              <p className="note">
+                ※ 영업시간은 가게 사정에 따라 변동될 수 있습니다.
+              </p>
             </td>
           </tr>
         </tbody>
