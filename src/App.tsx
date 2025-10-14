@@ -8,7 +8,8 @@ import Mypage from "./pages/Mypage";
 import RestaurantList from "./pages/RestaurantList";
 import RestaurantDetail from "./pages/RestaurantDetail";
 import RestaurantForm from "./pages/RestaurantForm";
-import MainPage from "./components/MainPage";
+import MainPage from "./pages/MainPage";
+import UserPage from "./pages/UserPage"; // ✅ 추가
 import "./App.css";
 
 const App: React.FC = () => {
@@ -22,12 +23,17 @@ const App: React.FC = () => {
             {/* 홈 화면 */}
             <Route path="/" element={<MainPage />} />
 
-            {/* 로그인 화면 */}
+            {/* 로그인 / 회원가입 */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+
+            {/* 마이페이지 */}
             <Route path="/mypage" element={<Mypage />} />
 
-            {/* ✅ 레스토랑 관련 페이지 */}
+            {/* ✅ 다른 유저 페이지 */}
+            <Route path="/users/:id" element={<UserPage />} /> {/* ✅ 추가 */}
+
+            {/* 레스토랑 관련 */}
             <Route path="/restaurants" element={<RestaurantList />} />
             <Route path="/restaurants/:id" element={<RestaurantDetail />} />
             <Route path="/restaurants/new" element={<RestaurantForm />} />

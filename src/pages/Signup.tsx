@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axiosAuth from "../api/axiosAuth";
+import axios from "axios"; // ✅ axiosAuth 대신 일반 axios 사용
 import "../styles/signup.css";
 
 interface SignupRequest {
@@ -28,9 +28,12 @@ const Signup: React.FC = () => {
     const payload: SignupRequest = { email, password, name, phone };
 
     try {
-      const res = await axiosAuth.post<SignupResponse>(
-        "/api/members/register", // ✅ baseURL 
-        payload
+      const res = await axios.post<SignupResponse>(
+        "/api/members/register",
+        payload,
+        {
+          headers: { "Content-Type": "application/json" }, // ✅ 인증 헤더 제거
+        }
       );
 
       console.log("회원가입 성공:", res.data);
