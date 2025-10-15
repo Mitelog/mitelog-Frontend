@@ -26,6 +26,8 @@ const Login: React.FC = () => {
       localStorage.setItem("accessToken", res.data.accessToken);
       localStorage.setItem("refreshToken", res.data.refreshToken);
 
+      localStorage.setItem("memberId", res.data.memberId || res.data.id);
+
       alert("ログイン成功！");
       navigate("/", { replace: true });
     } catch (err) {
