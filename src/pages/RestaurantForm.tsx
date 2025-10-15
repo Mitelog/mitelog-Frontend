@@ -42,7 +42,7 @@ const RestaurantForm: React.FC = () => {
     const fetchCategories = async () => {
       try {
         const res = await axiosApi.get("/categories");
-        setCategories([...res.data]);
+        setCategories(res.data);
       } catch (err) {
         console.error("카테고리 불러오기 실패:", err);
       }
