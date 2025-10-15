@@ -187,16 +187,18 @@ const RestaurantForm: React.FC = () => {
         <div className="category-section">
           <p>カテゴリー選択</p>
           <div className="category-list">
-            {categories.map((cat) => (
-              <label key={cat.id} className="category-item">
-                <input
-                  type="checkbox"
-                  checked={selectedCategories.includes(cat.id)}
-                  onChange={() => handleCategoryChange(cat.id)}
-                />
-                {cat.name}
-              </label>
-            ))}
+            {/* ✅ 여기에 조건문 추가 */}
+            {Array.isArray(categories) &&
+              categories.map((cat) => (
+                <label key={cat.id} className="category-item">
+                  <input
+                    type="checkbox"
+                    checked={selectedCategories.includes(cat.id)}
+                    onChange={() => handleCategoryChange(cat.id)}
+                  />
+                  {cat.name}
+                </label>
+              ))}
           </div>
         </div>
 
