@@ -1,0 +1,67 @@
+.admin-layout {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background: #1e293b;
+  color: white;
+  padding: 20px;
+}
+
+.sidebar ul li {
+  margin: 10px 0;
+}
+
+.sidebar ul li.active a {
+  font-weight: bold;
+  color: #38bdf8;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* src/styles/admin.css */
+.dashboard-cards {
+  display: flex;
+  gap: 20px;
+}
+
+.card {
+  background: #f8fafc;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 20px;
+  width: 200px;
+  text-align: center;
+}
+
+.detail-box {
+  background: #f1f5f9;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #334155;
+  color: white;
+  padding: 10px 20px;
+}
+
+.topbar button {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
