@@ -15,7 +15,9 @@ const RestaurantHeader: React.FC<Props> = ({ restaurant }) => {
       <div
         className="banner"
         style={{
-          backgroundImage: `url(${restaurant.imageUrl || "/default-restaurant.jpg"})`,
+          backgroundImage: `url(${
+            restaurant.imageUrl || "/default-restaurant.jpg"
+          })`,
         }}
       />
       <div className="restaurant-info">
@@ -28,7 +30,9 @@ const RestaurantHeader: React.FC<Props> = ({ restaurant }) => {
           )}
         </div>
         {restaurant.rating !== undefined && (
-          <div className="restaurant-rating">⭐ {restaurant.rating.toFixed(1)}</div>
+          <div className="restaurant-rating">
+            ⭐ {restaurant.rating.toFixed(1)}
+          </div>
         )}
       </div>
     </div>
