@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axiosApi from "../../api/axiosApi";
 
 interface MenuFormProps {
@@ -29,6 +29,17 @@ const MenuForm: React.FC<MenuFormProps> = ({
 
   const isEdit = !!menu;
 
+  // ✅ 수정 모드일 때 기존 값 세팅
+  useEffect(() => {
+    if (menu) {
+      setName(menu.name);
+      setPrice(menu.price);
+      setImageUrl(menu.imageUrl || "");
+      setDescription(menu.description || "");
+      setCategory(menu.category || "");
+    }
+  }, [menu]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = { name, price, imageUrl, description, category };
@@ -50,7 +61,9 @@ const MenuForm: React.FC<MenuFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="menu-form">
-      <h4>{isEdit ? "메뉴 수정" : "새 메뉴 등록"}</h4>
+      <h4 className="menu-form-title">
+        {isEdit ? "✏️ 메뉴 수정" : "🍴 새 메뉴 등록"}
+      </h4>
 
       <div className="form-group">
         <label>메뉴명</label>
@@ -88,7 +101,7 @@ const MenuForm: React.FC<MenuFormProps> = ({
           type="text"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          placeholder="예: 모츠나베, 추가메뉴 등"
+          placeholder="예: 라멘, 사이드, 음료 등"
         />
       </div>
 
@@ -103,8 +116,10 @@ const MenuForm: React.FC<MenuFormProps> = ({
       </div>
 
       <div className="form-actions">
-        <button type="submit">{isEdit ? "수정" : "등록"}</button>
-        <button type="button" onClick={onCancel}>
+        <button type="submit" className="form-submit-btn">
+          {isEdit ? "수정 완료" : "등록"}
+        </button>
+        <button type="button" onClick={onCancel} className="form-cancel-btn">
           취소
         </button>
       </div>

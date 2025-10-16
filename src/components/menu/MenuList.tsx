@@ -39,6 +39,18 @@ const MenuList: React.FC<MenuListProps> = ({
     fetchMenus();
   }, [restaurantId]);
 
+  const handleDelete = async (menuId: number) => {
+    if (!window.confirm("이 메뉴를 삭제하시겠습니까?")) return;
+    try {
+      await axiosApi.delete(`/menus/${menuId}`);
+      alert("메뉴가 삭제되었습니다.");
+      setMenus((prev) => prev.filter((m) => m.id !== menuId));
+    } catch (err) {
+      console.error("메뉴 삭제 실패:", err);
+      alert("삭제 중 오류가 발생했습니다.");
+    }
+  };
+
   if (loading) return <p className="menu-loading">🍳 메뉴를 불러오는 중...</p>;
   if (menus.length === 0)
     return <p className="menu-empty">등록된 메뉴가 없습니다.</p>;
@@ -54,7 +66,7 @@ const MenuList: React.FC<MenuListProps> = ({
   return (
     <div className="menu-section">
       <div className="menu-header">
-        <h3>요리 메뉴</h3>
+        <h3>🍽️ 요리 메뉴</h3>
         <span className="menu-note">(세금 포함 가격)</span>
       </div>
 
@@ -83,12 +95,20 @@ const MenuList: React.FC<MenuListProps> = ({
                     <p className="menu-desc">{menu.description}</p>
                   )}
                   {isOwner && (
-                    <button
-                      className="menu-edit-btn"
-                      onClick={() => onEdit(menu)}
-                    >
-                      ✏️ 수정
-                    </button>
+                    <div className="menu-actions">
+                      <button
+                        className="menu-edit-btn"
+                        onClick={() => onEdit(menu)}
+                      >
+                        ✏️ 수정
+                      </button>
+                      <button
+                        className="menu-delete-btn"
+                        onClick={() => handleDelete(menu.id)}
+                      >
+                        ❌ 삭제
+                      </button>
+                    </div>
                   )}
                 </div>
               </li>

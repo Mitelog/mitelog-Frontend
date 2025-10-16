@@ -161,7 +161,7 @@ interface Restaurant {
   address: string;
   ownerName?: string;
   category?: string;
-  rating?: number;
+  averageRating?: number;
   thumbnailUrl?: string;
   images?: string[]; // ✅ 여러 장 지원
   phone?: string; // ✅ 있으면 퀵액션에서 사용
@@ -382,7 +382,7 @@ const RestaurantList: React.FC = () => {
                           カテゴリ: {r.category}
                         </span>
                       )}
-                      {typeof r.rating === "number" && (
+                      {typeof r.averageRating === "number" && (
                         <span
                           style={{
                             fontSize: 12,
@@ -392,7 +392,7 @@ const RestaurantList: React.FC = () => {
                             background: "#fff",
                           }}
                         >
-                          ⭐ {r.rating.toFixed(1)}
+                          ⭐ {r.averageRating.toFixed(1)}
                         </span>
                       )}
                     </div>
