@@ -9,7 +9,15 @@ import RestaurantList from "./pages/RestaurantList";
 import RestaurantDetail from "./pages/RestaurantDetail";
 import RestaurantForm from "./pages/RestaurantForm";
 import MainPage from "./pages/MainPage";
-import UserPage from "./pages/UserPage"; // ✅ 추가
+import UserPage from "./pages/UserPage";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminMembers from "./pages/admin/AdminMembers";
+import AdminRestaurants from "./pages/admin/AdminRestaurants";
+import AdminReviews from "./pages/admin/AdminReviews";
+import AdminMemberEdit from "./pages/admin/AdminMemberEdit";
+import AdminRestaurantEdit from "./pages/admin/AdminRestaurantEdit";
+import AdminReviewEdit from "./pages/admin/AdminReviewEdit";
 import "./App.css";
 
 const App: React.FC = () => {
@@ -31,7 +39,26 @@ const App: React.FC = () => {
             <Route path="/mypage" element={<Mypage />} />
 
             {/* ✅ 다른 유저 페이지 */}
-            <Route path="/users/:id" element={<UserPage />} /> {/* ✅ 추가 */}
+            <Route path="/users/:id" element={<UserPage />} />
+
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="members" element={<AdminMembers />} />
+              <Route path="restaurants" element={<AdminRestaurants />} />
+              <Route path="reviews" element={<AdminReviews />} />
+              <Route
+                path="/admin/members/:id/edit"
+                element={<AdminMemberEdit />}
+              />
+              <Route
+                path="/admin/restaurants/:id/edit"
+                element={<AdminRestaurantEdit />}
+              />
+              <Route
+                path="/admin/reviews/:id/edit"
+                element={<AdminReviewEdit />}
+              />
+            </Route>
 
             {/* 레스토랑 관련 */}
             <Route path="/restaurants" element={<RestaurantList />} />

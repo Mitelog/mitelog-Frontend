@@ -1,5 +1,5 @@
 import React from "react";
-import "./RestaurantMain.css"; // 표 디자인용 CSS (이전 버전 그대로 사용)
+import "./restaurantMain.css"; // 표 디자인용 CSS (이전 버전 그대로 사용)
 
 interface Props {
   restaurant: {
@@ -34,7 +34,9 @@ const RestaurantMain: React.FC<Props> = ({ restaurant }) => {
           </tr>
           <tr>
             <th>예약 가능 여부</th>
-            <td>{restaurant.reservationAvailable ? "예약 가능" : "예약 불가"}</td>
+            <td>
+              {restaurant.reservationAvailable ? "예약 가능" : "예약 불가"}
+            </td>
           </tr>
           <tr>
             <th>주소</th>
@@ -76,7 +78,9 @@ const RestaurantMain: React.FC<Props> = ({ restaurant }) => {
               ) : (
                 <p>영업시간 정보가 없습니다.</p>
               )}
-              <p className="note">※ 영업시간은 가게 사정에 따라 변동될 수 있습니다.</p>
+              <p className="note">
+                ※ 영업시간은 가게 사정에 따라 변동될 수 있습니다.
+              </p>
             </td>
           </tr>
         </tbody>

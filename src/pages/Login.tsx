@@ -4,9 +4,15 @@ import axiosAuth from "../api/axiosAuth"; // ✅ 공용 axios 사용
 import "../styles/login.css";
 
 interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
+  status: number;
+  msg: string;
+  data: {
+    accessToken: string;
+    refreshToken: string;
+    role: string;
+  };
 }
+
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -15,26 +21,29 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const res = await axiosAuth.post<LoginResponse>("/auth", {
-        email,
-        password,
-      });
+  try {
+    const res = await axiosAuth.post<LoginResponse>("/auth", {
+      email,
+      password,
+    });
 
-      localStorage.setItem("accessToken", res.data.accessToken);
-      localStorage.setItem("refreshToken", res.data.refreshToken);
+    // ✅ 감싸진 구조에 맞게 변경
+    const tokenData = res.data.data;
 
-      localStorage.setItem("memberId", res.data.memberId || res.data.id);
+    localStorage.setItem("accessToken", tokenData.accessToken);
+    localStorage.setItem("refreshToken", tokenData.refreshToken);
+    localStorage.setItem("role", tokenData.role);
 
-      alert("ログイン成功！");
-      navigate("/", { replace: true });
-    } catch (err) {
-      console.error("로그인 실패:", err);
-      setError("メールアドレスまたはパスワードが正しくありません。");
-    }
-  };
+    alert("ログイン成功！");
+    navigate("/", { replace: true });
+  } catch (err) {
+    console.error("로그인 실패:", err);
+    setError("メールアドレスまたはパスワードが正しくありません。");
+  }
+};
+
 
   return (
     <div className="login-container">
