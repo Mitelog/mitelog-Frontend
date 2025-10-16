@@ -1,0 +1,40 @@
+/* ────────────── RestaurantHeader.css ────────────── */
+
+.restaurant-header {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 상단 정보 박스 */
+.restaurant-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+}
+
+/* 가게 이름 */
+.restaurant-title {
+  font-size: 30px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 6px 0;
+}
+
+/* 카테고리 라벨 */
+.restaurant-subtitle {
+  font-size: 14px;
+  color: #777;
+  margin: 0;
+}
+
+/* 별점 */
+.restaurant-rating {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ff9500; /* 따뜻한 오렌지 계열로 강조 */
+}

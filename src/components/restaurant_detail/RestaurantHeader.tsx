@@ -1,9 +1,10 @@
 import React from "react";
+import "./restaurantHeader.css";
 
 interface Props {
   restaurant: {
     name: string;
-    rating?: number;
+    averageRating?: number | null;
     categoryNames?: string[];
     imageUrl?: string;
   };
@@ -23,15 +24,16 @@ const RestaurantHeader: React.FC<Props> = ({ restaurant }) => {
       <div className="restaurant-info">
         <div>
           <h2 className="restaurant-title">{restaurant.name}</h2>
-          {restaurant.categoryNames && (
+          {restaurant.categoryNames && restaurant.categoryNames.length > 0 && (
             <p className="restaurant-subtitle">
               {restaurant.categoryNames.join(" / ")}
             </p>
           )}
         </div>
-        {restaurant.rating !== undefined && (
+
+        {typeof restaurant.averageRating === "number" && (
           <div className="restaurant-rating">
-            ⭐ {restaurant.rating.toFixed(1)}
+            ⭐ {restaurant.averageRating.toFixed(1)}
           </div>
         )}
       </div>

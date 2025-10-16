@@ -18,7 +18,7 @@ interface RestaurantDetailData {
   ownerName?: string;
   createdAt?: string;
   updatedAt?: string;
-  rating?: number;
+  averageRating?: number;
   reviewCount?: number;
   categoryNames?: string[];
   imageUrl?: string;
@@ -26,8 +26,12 @@ interface RestaurantDetailData {
 
 const RestaurantDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // URL 파라미터
-  const [restaurant, setRestaurant] = useState<RestaurantDetailData | null>(null);
-  const [activeTab, setActiveTab] = useState<"main" | "menu" | "review">("main");
+  const [restaurant, setRestaurant] = useState<RestaurantDetailData | null>(
+    null
+  );
+  const [activeTab, setActiveTab] = useState<"main" | "menu" | "review">(
+    "main"
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -54,7 +58,8 @@ const RestaurantDetail: React.FC = () => {
   if (error) return <p className="error-text">{error}</p>;
   if (!restaurant) return <p>レストラン情報が見つかりません。</p>;
 
-  const isOwner = loggedInUserId && Number(loggedInUserId) === restaurant.ownerId;
+  const isOwner =
+    loggedInUserId && Number(loggedInUserId) === restaurant.ownerId;
 
   const handleEditClick = () => {
     navigate(`/restaurants/edit/${restaurant.id}`);
