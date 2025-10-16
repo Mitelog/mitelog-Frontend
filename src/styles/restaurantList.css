@@ -1,3 +1,4 @@
+/* ===== Layout ===== */
 .restaurant-page {
   display: flex;
   max-width: 1200px;
@@ -27,13 +28,11 @@
   display: flex;
   flex-direction: column;
 }
-
 .filter-group label {
   font-size: 14px;
   margin-bottom: 6px;
   font-weight: 500;
 }
-
 .filter-group input,
 .filter-group select {
   padding: 8px;
@@ -41,25 +40,29 @@
   border-radius: 6px;
 }
 
+/* 적용 버튼 */
 .apply-btn {
   width: 100%;
   padding: 10px;
   background-color: #f9a825;
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-
 .apply-btn:hover {
   background-color: #f57f17;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 /* --- 메인 리스트 --- */
 .restaurant-main {
   width: 75%;
   padding: 20px;
+  text-align: left;
 }
 
 .list-header {
@@ -71,35 +74,36 @@
 
 .register-btn {
   background-color: #0071c2;
-  color: white;
+  color: #fff;
   border: none;
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
 }
-
 .register-btn:hover {
   background-color: #005da3;
 }
 
+/* 리스트 UL */
 .restaurant-list {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  list-style: none; /* ✅ 기본 점 제거 */
-  padding: 0; /* ✅ 들여쓰기 제거 */
+  list-style: none;
+  padding: 0;
   margin: 0;
 }
 
+/* 카드 */
 .restaurant-card {
   border: 1px solid #eee;
   border-radius: 10px;
   padding: 16px;
   background-color: #fff;
-  transition: box-shadow 0.2s ease;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
   cursor: pointer;
+  width: 100%;
 }
-
 .restaurant-card:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -108,4 +112,161 @@
   font-size: 18px;
   color: #0040a0;
   margin-bottom: 4px;
+}
+
+/* ===== 공용 유틸 ===== */
+.hover-grow {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  will-change: transform;
+}
+.hover-grow:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+  filter: saturate(1.03);
+}
+.hover-grow .label {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+.hover-grow:hover .label {
+  transform: scale(1.06);
+}
+
+.btn-soft {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0.92));
+  cursor: pointer;
+}
+.btn-soft:active {
+  transform: scale(0.98);
+}
+
+.card-elev {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  background: #fff;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+.skeleton {
+  height: 112px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #f2f2f2 25%, #eaeaea 37%, #f2f2f2 63%);
+  background-size: 400% 100%;
+  animation: shine 1.2s ease-in-out infinite;
+}
+
+/* ===== 캐러셀 (ic-*) ===== */
+.ic-wrap {
+  position: relative;
+  overflow: hidden;
+  background: #eee;
+  flex: 0 0 auto;
+  border-radius: 10px;
+}
+.ic-track {
+  display: flex;
+  transition: transform 0.25s ease;
+}
+.ic-track img {
+  object-fit: cover;
+  background: #eee;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* arrows */
+.ic-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.ic-left {
+  left: 6px;
+}
+.ic-right {
+  right: 6px;
+}
+.ic-wrap:hover .ic-arrow {
+  opacity: 1;
+}
+
+/* dots */
+.ic-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+.ic-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  padding: 0;
+}
+.ic-dot.active {
+  background: #fff;
+  border-color: rgba(0, 0, 0, 0.35);
+}
+
+/* --- Hover Quick Actions --- */
+.quick-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  pointer-events: none; /* 기본 비활성 → 자식 버튼에서만 활성화 */
+  z-index: 5;
+}
+
+.restaurant-card:hover .quick-actions {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto; /* 호버 시에만 클릭 가능 */
+}
+
+.qa-btn {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 999px;
+  padding: 4px 8px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.qa-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  background: #fff;
 }
