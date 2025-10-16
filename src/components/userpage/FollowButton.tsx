@@ -22,11 +22,11 @@ const FollowButton: React.FC<Props> = ({ targetId, isFollowed, setIsFollowed }) 
     try {
       if (isFollowed) {
         // ✅ 언팔로우 요청
-        await axiosApi.delete(`/follows/${targetId}`);
+        await axiosApi.delete(`/follow/${targetId}`);
         setIsFollowed(false);
       } else {
         // ✅ 팔로우 요청
-        await axiosApi.post(`/follows/${targetId}`);
+        await axiosApi.post(`/follow/${targetId}`);
         setIsFollowed(true);
       }
     } catch (err) {
