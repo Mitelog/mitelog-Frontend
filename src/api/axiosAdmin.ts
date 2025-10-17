@@ -80,7 +80,6 @@ export const updateReview = (id: number, data: any) =>
   adminApi.put(`/reviews/${id}`, data);
 
 // 🗑 리뷰 삭제
-export const deleteReview = (id: number) =>
-  adminApi.delete(`/reviews/${id}`);
+export const deleteReview = (id: number) => adminApi.delete(`/reviews/${id}`);
 
 export default adminApi;
