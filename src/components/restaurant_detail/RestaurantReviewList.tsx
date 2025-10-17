@@ -3,6 +3,7 @@ import React from "react";
 interface Review {
   id: number;
   memberName: string;
+  title: string;
   rating: number;
   content: string;
   createdAt: string;
@@ -19,15 +20,23 @@ const RestaurantReviewList: React.FC<Props> = ({ reviews }) => {
   return (
     <div className="review-list">
       {reviews.map((r) => (
-        <div key={r.id} className="review-item">
+        <div className="review-card" key={r.id}>
+          {/* 상단: 작성자 + 평점 */}
           <div className="review-header">
             <span className="review-author">{r.memberName}</span>
             <span className="review-rating">⭐ {r.rating}</span>
           </div>
+
+          {/* ✅ 제목 */}
+          <h4 className="review-title">{r.title}</h4>
+
+          {/* 본문 */}
           <p className="review-content">{r.content}</p>
-          <span className="review-date">
+
+          {/* 작성일 */}
+          <p className="review-date">
             {new Date(r.createdAt).toLocaleDateString("ja-JP")}
-          </span>
+          </p>
         </div>
       ))}
     </div>
