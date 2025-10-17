@@ -15,7 +15,7 @@ const ReviewList: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ 페이징 상태
+  // ✅ 페이징 관련 상태
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const pageSize = 5;
@@ -23,7 +23,7 @@ const ReviewList: React.FC = () => {
   /** ✅ 내 리뷰 목록 불러오기 */
   const fetchMyReviews = async (pageNum = 0) => {
     try {
-      const res = await axiosApi.get("/reviews/member/me", {
+      const res = await axiosApi.get(`/reviews/member/me`, {
         params: { page: pageNum, size: pageSize },
       });
 
@@ -43,27 +43,38 @@ const ReviewList: React.FC = () => {
   if (loading) return <p className="loading-text">レビューを読み込み中...</p>;
 
   return (
-    <div className="review-list-container">
-      <h3 className="review-section-title">私のレビュー</h3>
+    <div className="restaurant-review-section">
+      {/* 상단 영역 */}
+      <div className="review-header-row">
+        <h3>私のレビュー</h3>
+      </div>
 
+      {/* ✅ 리뷰 목록 */}
       {reviews.length === 0 ? (
         <p className="no-review-text">まだレビューがありません。</p>
       ) : (
-        <ul className="review-list">
-          {reviews.map((review) => (
-            <li key={review.id} className="review-card">
-              <h4 className="review-title">{review.title}</h4>
-              <p className="review-restaurant">
-                店舗名: <strong>{review.restaurantName}</strong>
+        <div className="review-list">
+          {reviews.map((r) => (
+            <div className="review-card" key={r.id}>
+              {/* 상단: 가게명 + 평점 */}
+              <div className="review-header">
+                <span className="review-restaurant">{r.restaurantName}</span>
+                <span className="review-rating">⭐ {r.rating}</span>
+              </div>
+
+              {/* 제목 */}
+              <h4 className="review-title">{r.title}</h4>
+
+              {/* 본문 */}
+              <p className="review-content">{r.content}</p>
+
+              {/* 작성일 */}
+              <p className="review-date">
+                {new Date(r.createdAt).toLocaleDateString("ja-JP")}
               </p>
-              <p className="review-rating">評価: {review.rating} / 5</p>
-              <p className="review-content">{review.content}</p>
-              <span className="review-date">
-                投稿日時: {new Date(review.createdAt).toLocaleDateString("ja-JP")}
-              </span>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
 
       {/* ✅ 페이지네이션 */}
