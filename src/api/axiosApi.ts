@@ -21,8 +21,21 @@ axiosApi.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response?.status;
+    const url = error.config?.url || "";
 
-    if (status === 401) {
+    // ✅ 로그인 없이 접근 가능한 공개 API 경로
+    const publicUrls = [
+      "/api/restaurants",
+      "/api/menus",
+      "/api/categories",
+      "/api/reviews",
+    ];
+
+    // ✅ 401 처리 로직 (공개 API는 제외)
+    if (
+      status === 401 &&
+      !publicUrls.some((path) => url.includes(path))
+    ) {
       alert("세션이 만료되었습니다. 다시 로그인해주세요.");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
