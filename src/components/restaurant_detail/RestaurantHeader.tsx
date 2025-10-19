@@ -1,8 +1,9 @@
-import React from "react";
-import "./restaurantHeader.css";
+import React, { useState } from "react";
+import BookmarkButton from "./BookmarkButton";
 
 interface Props {
   restaurant: {
+    id: number;
     name: string;
     averageRating?: number | null;
     categoryNames?: string[];
@@ -21,8 +22,9 @@ const RestaurantHeader: React.FC<Props> = ({ restaurant }) => {
           })`,
         }}
       />
+
       <div className="restaurant-info">
-        <div>
+        <div className="restaurant-left">
           <h2 className="restaurant-title">{restaurant.name}</h2>
           {restaurant.categoryNames && restaurant.categoryNames.length > 0 && (
             <p className="restaurant-subtitle">
@@ -31,11 +33,14 @@ const RestaurantHeader: React.FC<Props> = ({ restaurant }) => {
           )}
         </div>
 
-        {typeof restaurant.averageRating === "number" && (
-          <div className="restaurant-rating">
-            ⭐ {restaurant.averageRating.toFixed(1)}
-          </div>
-        )}
+        <div className="restaurant-right">
+          {typeof restaurant.averageRating === "number" && (
+            <div className="restaurant-rating">
+              ⭐ {restaurant.averageRating.toFixed(1)}
+            </div>
+          )}
+          <BookmarkButton restaurantId={restaurant.id} />
+        </div>
       </div>
     </div>
   );
