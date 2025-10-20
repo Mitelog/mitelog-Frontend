@@ -44,7 +44,7 @@
 .apply-btn {
   width: 100%;
   padding: 10px;
-  background-color: #f9a825;
+  background-color: #ff6000;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -53,7 +53,7 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .apply-btn:hover {
-  background-color: #f57f17;
+  background-color: #ff6600;
   transform: translateY(-1px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }

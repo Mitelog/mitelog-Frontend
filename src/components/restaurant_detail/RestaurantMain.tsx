@@ -1,5 +1,5 @@
 import React from "react";
-import "./restaurantMain.css"; // 표 디자인용 CSS (이전 버전 그대로 사용)
+import "./restaurantMain.css";
 
 interface Props {
   restaurant: {
@@ -10,77 +10,152 @@ interface Props {
     description?: string;
     reservationAvailable?: boolean;
     openHours?: string[];
+    seatCount?: number;
+    averagePrice?: string;
+    parkingAvailable?: boolean;
+    smokingArea?: boolean;
+    paymentMethods?: string[];
+    holiday?: string;
+    website?: string;
   };
 }
 
 const RestaurantMain: React.FC<Props> = ({ restaurant }) => {
   return (
     <div className="restaurant-info-section">
-      <h3 className="section-title">점포 정보(상세)</h3>
+      <h3 className="section-title">店舗情報</h3>
 
       <table className="info-table">
         <tbody>
           <tr>
-            <th>점포명</th>
+            <th>店名</th>
             <td>{restaurant.name}</td>
           </tr>
-          <tr>
-            <th>카테고리</th>
-            <td>{restaurant.categoryNames?.join(", ") || "미등록"}</td>
-          </tr>
-          <tr>
-            <th>예약 · 문의</th>
-            <td>{restaurant.phone || "전화번호 미등록"}</td>
-          </tr>
-          <tr>
-            <th>예약 가능 여부</th>
-            <td>
-              {restaurant.reservationAvailable ? "예약 가능" : "예약 불가"}
-            </td>
-          </tr>
-          <tr>
-            <th>주소</th>
-            <td>
-              {restaurant.address || "주소 미등록"}
 
-              {/* ✅ 주소가 있으면 지도 표시 */}
-              {restaurant.address ? (
-                <div className="map-placeholder">
-                  <iframe
-                    title="restaurant-map"
-                    src={`https://maps.google.com/maps?q=${encodeURIComponent(
-                      restaurant.address
-                    )}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
-                    width="100%"
-                    height="250"
-                    style={{
-                      border: 0,
-                      borderRadius: "8px",
-                      marginTop: "8px",
-                    }}
-                    loading="lazy"
-                  ></iframe>
-                </div>
-              ) : (
-                <p className="no-map-text">등록된 주소가 없습니다.</p>
-              )}
+          <tr>
+            <th>カテゴリー</th>
+            <td>{restaurant.categoryNames?.join(" / ")}</td>
+          </tr>
+
+          <tr>
+            <th>電話番号</th>
+            <td>{restaurant.phone}</td>
+          </tr>
+
+          <tr>
+            <th>住所</th>
+            <td>
+              {restaurant.address}
+              <div className="map-placeholder">
+                <iframe
+                  title="restaurant-map"
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                    restaurant.address
+                  )}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                  width="100%"
+                  height="250"
+                  style={{
+                    border: 0,
+                    borderRadius: "8px",
+                    marginTop: "8px",
+                  }}
+                  loading="lazy"
+                ></iframe>
+              </div>
             </td>
           </tr>
+
           <tr>
-            <th>영업시간</th>
+            <th>営業時間</th>
             <td>
-              {restaurant.openHours ? (
+              {restaurant.openHours?.length ? (
                 <ul className="open-hours">
-                  {restaurant.openHours.map((hour, index) => (
-                    <li key={index}>{hour}</li>
+                  {restaurant.openHours.map((hour, i) => (
+                    <li key={i}>{hour}</li>
                   ))}
                 </ul>
               ) : (
-                <p>영업시간 정보가 없습니다.</p>
+                <ul className="open-hours">
+                  <li>月〜金 11:30〜22:00</li>
+                  <li>土日祝 12:00〜21:30</li>
+                </ul>
               )}
-              <p className="note">
-                ※ 영업시간은 가게 사정에 따라 변동될 수 있습니다.
-              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <th>定休日</th>
+            <td>{restaurant.holiday ?? "不定休"}</td>
+          </tr>
+
+          <tr>
+            <th>座席数</th>
+            <td>{restaurant.seatCount ?? 40}席</td>
+          </tr>
+
+          <tr>
+            <th>平均予算</th>
+            <td>{restaurant.averagePrice ?? "¥3,000〜¥5,000"}</td>
+          </tr>
+
+          <tr>
+            <th>駐車場</th>
+            <td>
+              {restaurant.parkingAvailable !== undefined
+                ? restaurant.parkingAvailable
+                  ? "あり"
+                  : "なし"
+                : "なし"}
+            </td>
+          </tr>
+
+          <tr>
+            <th>喫煙可否</th>
+            <td>
+              {restaurant.smokingArea !== undefined
+                ? restaurant.smokingArea
+                  ? "喫煙可"
+                  : "全席禁煙"
+                : "全席禁煙"}
+            </td>
+          </tr>
+
+          <tr>
+            <th>支払い方法</th>
+            <td>
+              {restaurant.paymentMethods?.length
+                ? restaurant.paymentMethods.join(" / ")
+                : "現金 / クレジットカード / 電子マネー"}
+            </td>
+          </tr>
+
+          <tr>
+            <th>予約可否</th>
+            <td>
+              {restaurant.reservationAvailable
+                ? "予約可能"
+                : "予約不可"}
+            </td>
+          </tr>
+
+          <tr>
+            <th>公式サイト</th>
+            <td>
+              <a
+                href={restaurant.website ?? "https://example.com/"}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {restaurant.website ?? "https://example.com/"}
+              </a>
+            </td>
+          </tr>
+
+          <tr>
+            <th>紹介文</th>
+            <td>
+              {restaurant.description ??
+                "炭火で焼き上げる上質な肉料理と、落ち着いた雰囲気の中でお食事を楽しめます。"}
             </td>
           </tr>
         </tbody>
