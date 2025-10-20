@@ -1,0 +1,50 @@
+.bookmark-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  background: #fff;
+  color: #444;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.bookmark-btn:hover {
+  border-color: #ff6600;
+  color: #ff6600;
+}
+
+/* 활성화(북마크됨) */
+.bookmark-btn.active {
+  background: #ff6600;
+  color: #fff;
+  border: 1px solid #ff6600;
+}
+
+.bookmark-btn.active:hover {
+  background: #ff8533;
+}
+
+/* 별 아이콘 */
+.star-icon {
+  font-size: 16px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+/* 클릭 시 살짝 확대되는 효과 */
+.bookmark-btn:active .star-icon {
+  transform: scale(1.2);
+}
+
+/* 비활성화 (로딩 중) */
+.bookmark-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

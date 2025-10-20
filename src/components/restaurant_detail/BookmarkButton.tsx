@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosApi from "../../api/axiosApi";
+import "./BookmarkButton.css"; // 👈 추가
 
 type Props = { restaurantId: number };
 
@@ -52,22 +53,21 @@ export default function BookmarkButton({ restaurantId }: Props) {
         setBookmarked(true);
       }
     } catch (e: any) {
-      const status = e?.response?.status;
-      const message = e?.response?.data?.message || e?.message;
-      if (status === 409) {
-        alert(message ?? "이미 처리된 상태입니다.");
-      } else if (status && status !== 401) {
-        alert(message ?? "요청 중 오류가 발생했습니다.");
-      }
       console.error("북마크 토글 실패", e);
+      alert("북마크 처리 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <button onClick={handleToggle} disabled={loading}>
-      {bookmarked ? "★ 북마크됨" : "☆ 북마크"}
+    <button
+      className={`bookmark-btn ${bookmarked ? "active" : ""}`}
+      onClick={handleToggle}
+      disabled={loading}
+    >
+      <span className="star-icon">{bookmarked ? "★" : "☆"}</span>
+      {bookmarked ? "북마크됨" : "북마크"}
     </button>
   );
 }

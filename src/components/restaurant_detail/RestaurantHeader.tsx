@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import BookmarkButton from "./BookmarkButton";
+import "./bookmarkButton.css"
 
 interface Props {
   restaurant: {
