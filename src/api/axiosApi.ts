@@ -32,10 +32,7 @@ axiosApi.interceptors.response.use(
     ];
 
     // ✅ 401 처리 로직 (공개 API는 제외)
-    if (
-      status === 401 &&
-      !publicUrls.some((path) => url.includes(path))
-    ) {
+    if (status === 401 && !publicUrls.some((path) => url.includes(path))) {
       alert("세션이 만료되었습니다. 다시 로그인해주세요.");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
