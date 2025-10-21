@@ -1,0 +1,145 @@
+/* 🟧 ───────────── 모달 오버레이 ───────────── */
+.reservation-modal-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(2px); /* 💡 배경 살짝 블러 효과 */
+  z-index: 2000;
+  animation: fadeIn 0.25s ease;
+}
+
+/* 🟧 ───────────── 모달 박스 ───────────── */
+.reservation-modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px 32px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  position: relative;
+  animation: scaleUp 0.25s ease;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+/* 닫기 버튼 */
+.close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #555;
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.close-btn:hover {
+  color: #ff6600;
+  transform: rotate(90deg);
+}
+
+/* 🟧 ───────────── 폼 레이아웃 ───────────── */
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.reservation-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.reservation-form input,
+.reservation-form select,
+.reservation-form textarea {
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reservation-form input:focus,
+.reservation-form select:focus,
+.reservation-form textarea:focus {
+  border-color: #ff6600;
+  box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.2);
+  outline: none;
+}
+
+/* 🟧 ───────────── 제출 버튼 ───────────── */
+.submit-btn {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.submit-btn:hover {
+  background-color: #e65c00;
+  transform: translateY(-1px);
+}
+
+/* 🟧 ───────────── 헤더의 예약 버튼 ───────────── */
+.reserve-btn {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.reserve-btn:hover {
+  background-color: #e65c00;
+  transform: translateY(-1px);
+}
+
+/* 🟧 ───────────── 버튼 그룹 (북마크 + 예약) ───────────── */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* 🟧 ───────────── 애니메이션 ───────────── */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

@@ -1,73 +1,171 @@
+/* 🟧 ───────────── 전체 헤더 ───────────── */
 .restaurant-header {
   border-radius: 12px;
   overflow: hidden;
   background-color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
-/* ✅ 배너 이미지 */
+/* 배너 */
 .banner {
   width: 100%;
-  height: 260px;
+  height: 280px;
   background-size: cover;
   background-position: center;
   position: relative;
 }
 
-/* ✅ 반투명 오버레이 */
+/* 🟧 어두운 그라데이션 오버레이 (밑부분만) */
 .banner-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.6) 10%,
+    rgba(0, 0, 0, 0.35) 40%,
+    rgba(0, 0, 0, 0.15) 70%,
+    transparent 100%
+  );
   display: flex;
   align-items: flex-end;
-  padding: 24px 32px;
+  padding: 28px 36px;
 }
 
-/* ✅ 내용 박스 */
+/* 좌우 배치 */
 .banner-content {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  animation: fadeIn 1s ease-in forwards;
+  opacity: 0;
 }
 
-/* ✅ 왼쪽 텍스트 */
+/* 🟧 왼쪽 (식당명 / 카테고리) */
+.restaurant-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 6px;
+  animation: slideUp 0.8s ease forwards;
+  opacity: 0;
+}
+
 .restaurant-title {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 30px;
+  font-weight: 800;
   color: #fff;
   margin: 0;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+  text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.7);
+  border-left: 4px solid #ff6600;
+  padding-left: 10px;
 }
 
 .restaurant-subtitle {
   font-size: 15px;
   color: #ff6600;
-  margin-top: 6px;
+  font-weight: 600;
+  margin-top: 4px;
 }
 
-/* ✅ 오른쪽 평점/북마크 */
-.right {
-  text-align: right;
+/* 🟧 오른쪽 (평점 / 북마크 / 예약 버튼) */
+.restaurant-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  animation: slideUp 0.9s ease forwards;
+  opacity: 0;
 }
 
 .restaurant-rating {
-  font-size: 25px;
+  font-size: 22px;
   font-weight: 600;
-  color: #ff6600; /* 🔸 강조 오렌지 */
-  margin-bottom: 10px;
+  color: #ffcc00;
 }
 
-/* ✅ 반응형 */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 버튼 스타일 */
+.bookmark-btn {
+  background: #ff6600;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.bookmark-btn:hover {
+  background: #e65c00;
+  transform: translateY(-1px);
+}
+
+.reserve-btn {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.reserve-btn:hover {
+  background-color: #e65c00;
+  transform: translateY(-1px);
+}
+
+/* 🟧 애니메이션 효과 */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 반응형 */
 @media (max-width: 768px) {
   .banner-overlay {
-    padding: 16px;
+    padding: 18px;
   }
+
+  .banner-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
   .restaurant-title {
-    font-size: 22px;
+    font-size: 24px;
   }
-  .restaurant-subtitle {
-    font-size: 13px;
+
+  .restaurant-actions {
+    align-items: flex-start;
   }
 }
