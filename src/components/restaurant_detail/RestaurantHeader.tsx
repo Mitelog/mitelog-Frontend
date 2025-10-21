@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import BookmarkButton from "./BookmarkButton";
 import ReservationModal from "./ReservationModal";
 import "./bookmarkButton.css";
@@ -12,21 +13,57 @@ interface Props {
     averageRating?: number | null;
     categoryNames?: string[];
     imageUrl?: string;
+
+    // ✅ 가게 주인 정보
+    ownerId?: number;
+    ownerEmail?: string;
   };
 }
 
 const RestaurantHeader: React.FC<Props> = ({ restaurant }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // ✅ 주인 이름 클릭 시 유저페이지로 이동
+  const handleOwnerClick = () => {
+    if (restaurant.ownerId) {
+      navigate(`/users/${restaurant.ownerId}`); // ✅ 수정된 경로
+    }
+  };
 
   return (
     <div className="restaurant-header">
       {/* ✅ 배너 이미지 */}
-      <div className="banner">
+      <div
+        className="banner"
+        style={{
+          backgroundImage: `url(${
+            restaurant.imageUrl || "/default-restaurant.jpg"
+          })`,
+        }}
+      >
         <div className="banner-overlay">
           <div className="banner-content">
-            {/* 왼쪽: 식당명 / 카테고리 */}
+            {/* 왼쪽: 식당명 / 주인 / 카테고리 */}
             <div className="restaurant-left">
               <h2 className="restaurant-title">{restaurant.name}</h2>
+
+              {/* ✅ 가게 주인 이름 (클릭 시 이동) */}
+              {restaurant.ownerEmail && (
+                <p
+                  className="restaurant-owner"
+                  onClick={handleOwnerClick}
+                  style={{
+                    cursor: "pointer",
+                    color: "#ff6600", // 프로젝트 포인트 컬러
+                    fontWeight: 500,
+                    margin: "4px 0",
+                  }}
+                >
+                  👨‍🍳 店主: {restaurant.ownerEmail}
+                </p>
+              )}
+
               {restaurant.categoryNames?.length ? (
                 <p className="restaurant-subtitle">
                   {restaurant.categoryNames.join(" / ")}
