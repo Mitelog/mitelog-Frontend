@@ -1,0 +1,125 @@
+.filter-sidebar {
+  width: 25%;
+  border-right: 1px solid #ddd;
+  padding: 20px;
+  background-color: #fff;
+  position: sticky;
+  top: 80px;
+  height: fit-content;
+}
+
+.filter-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* ✅ 카드 공통 디자인 */
+.filter-card {
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 24px;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.03);
+}
+
+.filter-subtitle {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* ✅ 기본 input/select 그룹 */
+.filter-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group:last-child {
+  margin-bottom: 0;
+}
+
+.filter-group label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+/* ✅ Grid 기반 편의시설 버튼 */
+.facility-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.facility-item {
+  text-align: center;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px 6px;
+  font-size: 13.5px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap; /* 줄바꿈 방지 */
+}
+
+.facility-item:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-1px);
+}
+
+.facility-item.active {
+  border: 2px solid #ff6600;
+  background-color: #fff3e6;
+  color: #ff6600;
+  font-weight: 600;
+}
+
+/* ✅ 버튼 영역 */
+.filter-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.apply-btn,
+.reset-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.apply-btn {
+  background-color: #ff6600;
+  color: #fff;
+}
+
+.apply-btn:hover {
+  opacity: 0.9;
+}
+
+.reset-btn {
+  background-color: #eee;
+}
+
+.reset-btn:hover {
+  background-color: #ddd;
+}
