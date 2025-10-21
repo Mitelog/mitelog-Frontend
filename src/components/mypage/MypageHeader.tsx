@@ -11,7 +11,7 @@ interface Props {
     followerCount: number;
     followingCount: number;
   };
-  onOpenModal: (type: "followers" | "following") => void; // ✅ 추가
+  onOpenModal: (type: "followers" | "following" | "edit") => void; // ✅ edit 추가
 }
 
 const MypageHeader: React.FC<Props> = ({ profile, onOpenModal }) => {
@@ -30,7 +30,7 @@ const MypageHeader: React.FC<Props> = ({ profile, onOpenModal }) => {
             <h2>{profile.name}</h2>
             <p>{profile.email}</p>
 
-            {/* ✅ 클릭 시 모달 열기 */}
+            {/* ✅ 클릭 시 팔로워/팔로잉 모달 */}
             <div className="follow-stats">
               <span
                 onClick={() => onOpenModal("followers")}
@@ -47,7 +47,10 @@ const MypageHeader: React.FC<Props> = ({ profile, onOpenModal }) => {
             </div>
           </div>
 
-          <button className="edit-btn">マイページの設定</button>
+          {/* ✅ 프로필 수정 버튼 (회원 수정/탈퇴 모달 오픈) */}
+          <button className="edit-btn" onClick={() => onOpenModal("edit")}>
+            マイページの設定
+          </button>
         </div>
 
         <div className="profile-right">
