@@ -143,16 +143,6 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-.placeholder::after {
-  content: "이미지";
-  color: #999;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
 /* 가게 이름 */
 .name {
   padding: 12px 0;
@@ -160,4 +150,15 @@
   font-size: 15px;
   text-align: center;
   border-top: 1px solid #f2f2f2;
+}
+
+/* ===== placeholder 이미지 텍스트 ===== */
+.placeholder::after {
+  content: "イメージ";
+  color: #999;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
