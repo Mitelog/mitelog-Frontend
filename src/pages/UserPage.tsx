@@ -14,6 +14,7 @@ interface Profile {
   profileImage?: string | null;
   reviewCount: number;
   bookmarkCount: number;
+  restaurantCount: number; // ✅ 등록 가게 수 추가
   followerCount: number;
   followingCount: number;
   isFollowed?: boolean;
@@ -63,11 +64,24 @@ const UserPage: React.FC = () => {
   // ✅ 공개 프로필 불러오기
   const fetchPublicProfile = () => {
     axiosApi
-      .get(`/members/${id}/public`) // ✅ /api 자동 포함
+      .get(`/members/${id}/public`)
       .then((res) => {
         const data = res.data.data ?? res.data;
         console.log("✅ 공개 프로필 응답:", data);
-        setProfile(data);
+
+        setProfile({
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          profileImage: data.profileImage ?? null,
+          reviewCount: data.reviewCount ?? 0,
+          bookmarkCount: data.bookmarkCount ?? 0, // ✅ 추가
+          restaurantCount: data.restaurantCount ?? 0,
+          followerCount: data.followerCount ?? 0,
+          followingCount: data.followingCount ?? 0,
+          isFollowed: data.isFollowed ?? false,
+        });
+
         setIsFollowed(data.isFollowed ?? data.followed ?? false);
       })
       .catch((err) => {
@@ -81,21 +95,24 @@ const UserPage: React.FC = () => {
 
   return (
     <div className="userpage-container">
+      {/* 유저 기본 정보 */}
       <UserHeader profile={profile} />
 
-      {/* 본인 페이지는 이미 리다이렉트 처리됨 */}
+      {/* 팔로우 버튼 */}
       <FollowButton
         targetId={profile.id}
         isFollowed={isFollowed}
         setIsFollowed={setIsFollowed}
       />
 
+      {/* 탭 (리뷰 / 등록 가게 / 북마크 등) */}
       <UserTabs
         profile={profile}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
 
+      {/* 탭별 콘텐츠 */}
       <UserContent activeTab={activeTab} />
     </div>
   );
