@@ -3,7 +3,7 @@ import React from "react";
 interface Props {
   profile: {
     reviewCount: number;
-    visitCount: number;
+    restaurantCount: number;
     bookmarkCount: number;
   };
   activeTab: "review" | "restaurant" | "bookmark" | "reservation";
@@ -27,7 +27,7 @@ const MypageTabs: React.FC<Props> = ({ profile, activeTab, setActiveTab }) => {
         onClick={() => setActiveTab("restaurant")}
       >
         <span>나의 가게</span>
-        <strong>{profile.visitCount}</strong>
+        <strong>{profile.restaurantCount}</strong>
       </div>
       <div
         className={`tab ${activeTab === "bookmark" ? "active" : ""}`}
