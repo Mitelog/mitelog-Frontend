@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosAuth from "../api/axiosAuth"; // ✅ 공용 axios 사용
+import axiosAuth from "../api/axiosAuth";
 import "../styles/login.css";
 
 interface LoginResponse {
@@ -10,9 +10,9 @@ interface LoginResponse {
     accessToken: string;
     refreshToken: string;
     role: string;
+    memberId: number; // ✅ 추가
   };
 }
-
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -21,29 +21,30 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const res = await axiosAuth.post<LoginResponse>("/auth", {
-      email,
-      password,
-    });
+    try {
+      const res = await axiosAuth.post<LoginResponse>("/auth", {
+        email,
+        password,
+      });
 
-    // ✅ 감싸진 구조에 맞게 변경
-    const tokenData = res.data.data;
+      // ✅ 백엔드에서 감싸서 보내주는 구조
+      const { accessToken, refreshToken, role, memberId } = res.data.data;
 
-    localStorage.setItem("accessToken", tokenData.accessToken);
-    localStorage.setItem("refreshToken", tokenData.refreshToken);
-    localStorage.setItem("role", tokenData.role);
+      // ✅ 토큰 및 사용자 정보 저장
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("role", role);
+      localStorage.setItem("memberId", String(memberId)); // ✅ 문자열로 저장
 
-    alert("ログイン成功！");
-    navigate("/", { replace: true });
-  } catch (err) {
-    console.error("로그인 실패:", err);
-    setError("メールアドレスまたはパスワードが正しくありません。");
-  }
-};
-
+      alert("ログイン成功！");
+      navigate("/", { replace: true });
+    } catch (err) {
+      console.error("로그인 실패:", err);
+      setError("メールアドレスまたはパスワードが正しくありません。");
+    }
+  };
 
   return (
     <div className="login-container">
