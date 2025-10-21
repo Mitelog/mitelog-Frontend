@@ -193,3 +193,73 @@
     padding: 20px;
   }
 }
+
+.review-card {
+  text-decoration: none;
+}
+.review-card * {
+  text-decoration: none;
+}
+
+.bookmark-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.bookmark-card {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  background-color: #fff;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.2s;
+}
+.bookmark-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.bookmark-thumb {
+  flex-shrink: 0;
+  margin-right: 18px;
+}
+.bookmark-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+.bookmark-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 120px;
+}
+.bookmark-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.bookmark-name {
+  font-size: 18px; /* ✅ 이름 크기 키움 */
+  font-weight: 700;
+  color: #1e3a8a; /* 네이비 포인트 */
+}
+.bookmark-rating {
+  color: #f5b50a;
+  font-weight: 600;
+  font-size: 15px;
+}
+.bookmark-address {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 4px;
+}
+.bookmark-detail {
+  font-size: 13px;
+  color: #777;
+}
