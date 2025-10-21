@@ -45,6 +45,20 @@ const RestaurantDetail: React.FC = () => {
   const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      try {
+        const decoded = jwtDecode<JwtPayload>(token);
+        console.log("🧩 JWT Payload =", decoded);
+      } catch (err) {
+        console.error("JWT 디코드 실패:", err);
+      }
+    } else {
+      console.log("❌ accessToken 없음 (로그인 필요)");
+    }
+  }, []);
+
   /* ✅ 1. JWT decode로 로그인한 사용자 정보 확인 */
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
