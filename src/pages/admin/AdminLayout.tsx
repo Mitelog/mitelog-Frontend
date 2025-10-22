@@ -1,8 +1,8 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Sidebar from "../../components/admin/Sidebar";
+import { ChakraProvider } from "@chakra-ui/react"; // ✅ 여기에만 import
 import "../../styles/admin.css";
-import "../../styles/sidebar.css";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
@@ -14,14 +14,16 @@ export default function AdminLayout() {
       alert("관리자만 접근할 수 있습니다.");
       navigate("/");
     }
-  }, []);
+  }, [navigate]);
 
   return (
-    <div className="admin-layout">
-      <Sidebar />
-      <div className="admin-content">
-        <Outlet />
+    <ChakraProvider>
+      <div className="admin-layout">
+        <Sidebar />
+        <div className="admin-content">
+          <Outlet />
+        </div>
       </div>
-    </div>
+    </ChakraProvider>
   );
 }
