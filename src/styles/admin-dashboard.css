@@ -1,0 +1,65 @@
+.dashboard-container {
+  padding: 30px 40px;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+.dashboard-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 24px;
+}
+
+.dashboard-grid {
+  margin-bottom: 30px;
+}
+
+.dashboard-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-icon {
+  font-size: 36px;
+  color: #4318ff;
+}
+
+.members-card .dashboard-icon {
+  color: #3182ce;
+}
+
+.restaurants-card .dashboard-icon {
+  color: #38a169;
+}
+
+.reviews-card .dashboard-icon {
+  color: #ed8936;
+}
+
+.chart-card {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  min-height: 300px;
+}
+
+.chart-icon {
+  font-size: 22px;
+  color: #4318ff;
+}
+
+.dashboard-summary {
+  color: #4a5568;
+  font-size: 15px;
+  margin-top: 12px;
+}

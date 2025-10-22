@@ -1,0 +1,57 @@
+.admin-header {
+  position: fixed;
+  top: 0;
+  left: 250px; /* 사이드바 폭 */
+  right: 0;
+  height: 70px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  z-index: 150;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.admin-header-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.admin-header-utils {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-home {
+  background-color: #f3f3f3;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.admin-home:hover {
+  background-color: #e2e2e2;
+}
+
+.admin-logout {
+  background-color: #4318ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.admin-logout:hover {
+  background-color: #5b36ff;
+}

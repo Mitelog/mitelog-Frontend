@@ -2,7 +2,7 @@ import axios from "axios";
 
 // ✅ 기본 설정
 const adminApi = axios.create({
-  baseURL: "http://52.78.21.91:8080/api/admin",
+  baseURL: "http://localhost:8080/api/admin",
   headers: {
     "Content-Type": "application/json",
   },

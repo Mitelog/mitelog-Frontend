@@ -1,0 +1,81 @@
+/* ─────────────── 관리자 편집 페이지 공통 ─────────────── */
+.admin-edit-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+  padding: 60px 0;
+}
+
+/* 제목 */
+.admin-edit-container h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 20px;
+}
+
+/* 폼 카드 */
+.admin-edit-container form {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 30px 40px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-edit-container form:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* 라벨과 인풋 */
+.admin-edit-container label {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+
+.admin-edit-container input,
+.admin-edit-container textarea {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 15px;
+  width: 100%;
+  resize: none;
+}
+
+/* 버튼 */
+.admin-edit-container button {
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-edit-container button[type="submit"] {
+  background-color: #4318ff;
+  color: white;
+}
+
+.admin-edit-container button[type="submit"]:hover {
+  background-color: #5b36ff;
+}
+
+.admin-edit-container button[type="button"] {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.admin-edit-container button[type="button"]:hover {
+  background-color: #d0d0d0;
+}

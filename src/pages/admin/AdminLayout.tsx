@@ -1,8 +1,8 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Sidebar from "../../components/admin/Sidebar";
-import Topbar from "../../components/admin/Topbar";
 import "../../styles/admin.css";
+import "../../styles/Sidebar.css";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
@@ -20,7 +20,6 @@ export default function AdminLayout() {
     <div className="admin-layout">
       <Sidebar />
       <div className="admin-content">
-        <Topbar />
         <Outlet />
       </div>
     </div>

@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getReviewById, updateReview } from "../../api/axiosAdmin";
+import "../../styles/admin-edit.css";
+
 
 export default function AdminReviewEdit() {
   const { id } = useParams();
