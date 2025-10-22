@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getRestaurantById, updateRestaurant } from "../../api/axiosAdmin";
+import "../../styles/admin-edit.css";
+
 
 export default function AdminRestaurantEdit() {
   const { id } = useParams();
