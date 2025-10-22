@@ -2,7 +2,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Sidebar from "../../components/admin/Sidebar";
 import "../../styles/admin.css";
-import "../../styles/Sidebar.css";
+import "../../styles/sidebar.css";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
