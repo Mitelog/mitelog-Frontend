@@ -26,7 +26,7 @@ const MypageTabs: React.FC<Props> = ({ profile, activeTab, setActiveTab }) => {
         className={`tab ${activeTab === "restaurant" ? "active" : ""}`}
         onClick={() => setActiveTab("restaurant")}
       >
-        <span>나의 가게</span>
+        <span>私のレストラン</span>
         <strong>{profile.restaurantCount}</strong>
       </div>
       <div
@@ -40,7 +40,7 @@ const MypageTabs: React.FC<Props> = ({ profile, activeTab, setActiveTab }) => {
         className={`tab ${activeTab === "reservation" ? "active" : ""}`}
         onClick={() => setActiveTab("reservation")}
       >
-        <span>내 예약</span>
+        <span>私の予約</span>
       </div>
     </div>
   );

@@ -20,13 +20,13 @@ const MypageSidebar: React.FC<Props> = ({ activeTab, setActiveTab }) => {
         className={activeTab === "restaurant" ? "active" : ""}
         onClick={() => setActiveTab("restaurant")}
       >
-        🍴 내 가게
+        🍴 私のレストラン
       </button>
       <button
         className={activeTab === "reservation" ? "active" : ""}
         onClick={() => setActiveTab("reservation")}
       >
-        📅 내 예약
+        📅 私の予約
       </button>
     </div>
   );
