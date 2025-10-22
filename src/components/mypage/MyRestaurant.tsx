@@ -1,289 +1,143 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axiosApi from "../../api/axiosApi";
-import "../../styles/restaurantList.css"; // ✅ 같은 CSS 그대로 적용
+import "../restaurant_detail/restaurantReview.css"; // 북마크/리뷰 공용 CSS
 import { useNavigate } from "react-router-dom";
 
-/* --- 미니 캐러셀 컴포넌트 --- */
-type CarouselProps = {
-  images?: string[];
-  size?: number;
-  rounded?: number;
-};
-
-const ImageCarousel: React.FC<CarouselProps> = ({
-  images,
-  size = 120,
-  rounded = 10,
-}) => {
-  const fallback =
-    "data:image/svg+xml;utf8," +
-    encodeURIComponent(
-      "<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='100%' height='100%' fill='#f0f0f0' /><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='12' fill='#999'>No Image</text></svg>"
-    );
-  const safe = images && images.length > 0 ? images : [fallback];
-
-  const [idx, setIdx] = useState(0);
-  const [dragging, setDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  const next = () => setIdx((p) => (p + 1) % safe.length);
-  const prev = () => setIdx((p) => (p - 1 + safe.length) % safe.length);
-  const goto = (i: number) => setIdx(i);
-
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-
-    const onDown = (e: TouchEvent | MouseEvent) => {
-      const x =
-        "touches" in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
-      setStartX(x);
-      setDragging(true);
-    };
-
-    el.addEventListener("mousedown", onDown);
-    el.addEventListener("touchstart", onDown, { passive: true });
-
-    return () => {
-      el.removeEventListener("mousedown", onDown);
-      el.removeEventListener("touchstart", onDown);
-    };
-  }, []);
-
-  useEffect(() => {
-    const onMove = (e: TouchEvent | MouseEvent) => {
-      if (!dragging) return;
-    };
-
-    const onUp = (e: TouchEvent | MouseEvent) => {
-      if (!dragging) return;
-      const x =
-        "touches" in e
-          ? e.changedTouches?.[0]?.clientX ?? 0
-          : (e as MouseEvent).clientX;
-
-      const dx = x - startX;
-      if (dx > 40) prev();
-      else if (dx < -40) next();
-
-      setDragging(false);
-      setStartX(0);
-    };
-
-    document.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseup", onUp);
-    document.addEventListener("touchmove", onMove as any, { passive: true });
-    document.addEventListener("touchend", onUp);
-
-    return () => {
-      document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseup", onUp);
-      document.removeEventListener("touchmove", onMove as any);
-      document.removeEventListener("touchend", onUp);
-    };
-  }, [dragging, startX]);
-
-  return (
-    <div
-      className="ic-wrap"
-      style={{ width: size, height: size, borderRadius: rounded }}
-    >
-      <div
-        ref={trackRef}
-        className="ic-track"
-        style={{ transform: `translateX(-${idx * size}px)` }}
-      >
-        {safe.map((src, i) => (
-          <img
-            key={i}
-            src={src}
-            alt=""
-            loading="lazy"
-            draggable={false}
-            style={{
-              width: size,
-              height: size,
-              borderRadius: rounded,
-              objectFit: "cover",
-            }}
-          />
-        ))}
-      </div>
-
-      {safe.length > 1 && (
-        <>
-          <button className="ic-arrow ic-left" onClick={prev}>
-            ‹
-          </button>
-          <button className="ic-arrow ic-right" onClick={next}>
-            ›
-          </button>
-          <div className="ic-dots">
-            {safe.map((_, i) => (
-              <button
-                key={i}
-                className={`ic-dot ${i === idx ? "active" : ""}`}
-                onClick={() => goto(i)}
-              />
-            ))}
-          </div>
-        </>
-      )}
-    </div>
-  );
-};
-
-/* --- 내 가게 목록 --- */
 interface Restaurant {
   id: number;
   name: string;
-  address: string;
   area?: string;
-  phone?: string;
-  image?: string | null;
-  categoryNames?: string[];
+  address?: string;
+  image?: string;
   averageRating?: number;
 }
 
 const MyRestaurant: React.FC = () => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const pageSize = 5;
   const navigate = useNavigate();
 
+  const fetchMyRestaurants = async (pageNum = 0) => {
+    try {
+      const res = await axiosApi.get("/restaurants/my-restaurants", {
+        params: { page: pageNum, size: pageSize },
+      });
+      const pageData = res.data?.data || res.data;
+      setRestaurants(pageData?.content || []);
+      setTotalPages(pageData?.totalPages ?? 1);
+    } catch (err) {
+      console.error("❌ マイ店舗の取得に失敗:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchMyRestaurants = async () => {
-      setLoading(true);
-      try {
-        const token = localStorage.getItem("accessToken");
-        const res = await axiosApi.get("/restaurants/my-restaurants?page=0&size=10", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+    fetchMyRestaurants(page);
+  }, [page]);
 
-        const data = res.data.data.content || [];
-        const withImages = data.map((r: any, idx: number) => {
-          const seed = r.id ?? idx;
-          const picsum = (n: number) =>
-            `https://picsum.photos/seed/${seed}-${n}/240/240`;
-          return {
-            ...r,
-            images: r.image ? [r.image] : [picsum(1), picsum(2)],
-          };
-        });
-
-        setRestaurants(withImages);
-      } catch (err) {
-        console.error("❌ 내 가게 목록 불러오기 실패:", err);
-        setError("データの取得に失敗しました。");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchMyRestaurants();
-  }, []);
-
-  if (loading)
-    return (
-      <div>
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="skeleton" style={{ marginBottom: 16 }} />
-        ))}
-      </div>
-    );
-
-  if (error)
-    return (
-      <p className="error" style={{ color: "red" }}>
-        {error}
-      </p>
-    );
-
-  if (restaurants.length === 0)
-    return (
-      <div
-        style={{
-          padding: 28,
-          textAlign: "center",
-          border: "1px dashed rgba(0,0,0,.12)",
-          borderRadius: 16,
-          background: "linear-gradient(180deg,#fff,#fafafa)",
-        }}
-      >
-        등록된 가게가 없습니다.
-      </div>
-    );
+  if (loading) return <p className="loading-text">読み込み中...</p>;
 
   return (
-    <div className="restaurant-main">
-      <div className="list-header">
-        <h2 className="page-title">🍴 내 가게 목록</h2>
+    <div className="restaurant-review-section">
+      {/* 상단 헤더 */}
+      <div className="review-header-row">
+        <h3>私のレストラン</h3>
         <button
           className="btn-soft hover-grow"
           onClick={() => navigate("/restaurants/new")}
         >
-          <span className="label">➕ 새 식당 등록</span>
+          ＋ 店舗を追加
         </button>
       </div>
 
-      <ul className="restaurant-list">
-        {restaurants.map((r) => (
-          <li
-            key={r.id}
-            className="restaurant-card hover-grow"
-            onClick={() => navigate(`/restaurants/${r.id}`)}
-            style={{
-              display: "flex",
-              gap: 12,
-              padding: 14,
-              cursor: "pointer",
-              position: "relative",
-            }}
-          >
-            <ImageCarousel images={r.images} size={120} rounded={10} />
+      {/* 목록 */}
+      {restaurants.length === 0 ? (
+        <p className="no-review-text">登録された店舗はありません。</p>
+      ) : (
+        <>
+          <div className="bookmark-list">
+            {restaurants.map((r) => {
+              const fallback =
+                "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=400&fit=crop&q=60&auto=format";
+              const addressLine = r.address?.trim() || r.area || "住所情報なし";
+              const rating =
+                typeof r.averageRating === "number"
+                  ? r.averageRating.toFixed(1)
+                  : "0.0";
 
-            <div className="restaurant-info" style={{ flex: 1, minWidth: 0 }}>
-              <h3 className="restaurant-name">{r.name}</h3>
-              <p className="restaurant-address">{r.address}</p>
-              <div
-                style={{
-                  display: "flex",
-                  gap: 8,
-                  marginTop: 6,
-                  flexWrap: "wrap",
-                }}
+              return (
+                <a
+                  key={r.id}
+                  href={`/restaurants/${r.id}`}
+                  className="bookmark-card"
+                >
+                  {/* 썸네일 */}
+                  <div className="bookmark-thumb">
+                    <img
+                      src={r.image || fallback}
+                      alt={r.name}
+                      className="bookmark-img"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = fallback;
+                      }}
+                    />
+                  </div>
+
+                  {/* 내용 */}
+                  <div className="bookmark-info">
+                    {/* 이름 + 평점 */}
+                    <div className="bookmark-header">
+                      <h4 className="bookmark-name">{r.name}</h4>
+                      <span className="bookmark-rating">⭐ {rating}</span>
+                    </div>
+
+                    {/* 주소 */}
+                    <p
+                      className="bookmark-address"
+                      title={addressLine} // ← 마우스 올리면 전체 주소 툴팁
+                    >
+                      {addressLine}
+                    </p>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+
+          {/* 페이지네이션 */}
+          {totalPages > 1 && (
+            <div className="pagination-container">
+              <button
+                className="page-btn"
+                disabled={page === 0}
+                onClick={() => setPage((p) => p - 1)}
               >
-                {r.categoryNames && r.categoryNames.length > 0 && (
-                  <span
-                    style={{
-                      fontSize: 12,
-                      padding: "4px 10px",
-                      border: "1px solid rgba(0,0,0,.12)",
-                      borderRadius: 999,
-                      background: "#fff",
-                    }}
-                  >
-                    {r.categoryNames.join(", ")}
-                  </span>
-                )}
-                {typeof r.averageRating === "number" && (
-                  <span
-                    style={{
-                      fontSize: 12,
-                      padding: "4px 10px",
-                      border: "1px solid rgba(0,0,0,.12)",
-                      borderRadius: 999,
-                      background: "#fff",
-                    }}
-                  >
-                    ⭐ {r.averageRating.toFixed(1)}
-                  </span>
-                )}
-              </div>
+                ◀ 前へ
+              </button>
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <button
+                  key={i}
+                  className={`page-btn ${page === i ? "active" : ""}`}
+                  onClick={() => setPage(i)}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                className="page-btn"
+                disabled={page === totalPages - 1}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                次へ ▶
+              </button>
             </div>
-          </li>
-        ))}
-      </ul>
+          )}
+        </>
+      )}
     </div>
   );
 };
