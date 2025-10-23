@@ -11,18 +11,29 @@ interface Props {
     followerCount: number;
     followingCount: number;
   };
-  onOpenModal: (type: "followers" | "following" | "edit") => void; // ✅ edit 추가
+  onOpenModal: (type: "followers" | "following" | "edit") => void;
 }
 
 const MypageHeader: React.FC<Props> = ({ profile, onOpenModal }) => {
   return (
     <div className="mypage-header">
-      <div className="banner"></div>
+      {/* ✅ 랜덤 배너 이미지 */}
+      <div
+        className="banner"
+        style={{
+          backgroundImage:
+            'url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          height: "180px",
+          borderRadius: "12px 12px 0 0",
+        }}
+      ></div>
 
       <div className="profile-row">
         <div className="profile-left">
           <img
-            src={profile.profileImage || "/default-profile.png"}
+            src={profile.profileImage || "/images/profile-default.jpg"}
             alt="profile"
             className="profile-photo"
           />
@@ -47,7 +58,7 @@ const MypageHeader: React.FC<Props> = ({ profile, onOpenModal }) => {
             </div>
           </div>
 
-          {/* ✅ 프로필 수정 버튼 (회원 수정/탈퇴 모달 오픈) */}
+          {/* ✅ 프로필 수정 버튼 */}
           <button className="edit-btn" onClick={() => onOpenModal("edit")}>
             マイページの設定
           </button>
