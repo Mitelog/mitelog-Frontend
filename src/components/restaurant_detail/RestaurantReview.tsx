@@ -7,10 +7,12 @@ import "./restaurantReview.css";
 interface Review {
   id: number;
   memberName: string;
-  title: string; // ✅ 제목 추가
+  title: string;
   rating: number;
   content: string;
   createdAt: string;
+  likeCount?: number; // ✅ 추가
+  likedByMe?: boolean; // ✅ 추가
 }
 
 interface Props {
@@ -34,8 +36,21 @@ const RestaurantReview: React.FC<Props> = ({ restaurantId }) => {
         params: { page: pageNum, size: pageSize },
       });
 
-      setReviews(res.data.content); // ✅ Page 객체 content
-      setTotalPages(res.data.totalPages);
+      // 백엔드가 likeCount 대신 likeNum을 내려주는 경우 대비해서 정규화
+      const content = (res.data?.content ?? []).map((it: any) => ({
+        id: it.id,
+        memberName: it.memberName,
+        title: it.title,
+        rating: it.rating,
+        content: it.content,
+        createdAt: it.createdAt,
+        likeCount:
+          typeof it.likeCount === "number" ? it.likeCount : it.likeNum ?? 0,
+        likedByMe: !!it.likedByMe,
+      })) as Review[];
+
+      setReviews(content);
+      setTotalPages(res.data.totalPages ?? 0);
     } catch (err) {
       console.error("리뷰 목록 불러오기 실패:", err);
     } finally {
@@ -45,14 +60,15 @@ const RestaurantReview: React.FC<Props> = ({ restaurantId }) => {
 
   useEffect(() => {
     fetchReviews(page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [restaurantId, page]);
 
   if (loading) return <p className="loading-text">レビューを読み込み中...</p>;
 
   /** ✅ 리뷰 등록 후 새로고침 */
   const handleReviewAdded = () => {
-    fetchReviews(0); // 새 리뷰 작성 시 첫 페이지로 리셋
     setPage(0);
+    fetchReviews(0); // 새 리뷰 작성 시 첫 페이지로 리셋
     setIsModalOpen(false);
   };
 
