@@ -24,7 +24,7 @@ const UserHeader: React.FC<Props> = ({ profile }) => {
       <div className="profile-row">
         <div className="profile-left">
           <img
-            src={profile.profileImage || "/default-profile.png"}
+            src={profile.profileImage || "/images/profile-default.jpg"}
             alt="profile"
             className="profile-photo"
           />
@@ -47,8 +47,9 @@ const UserHeader: React.FC<Props> = ({ profile }) => {
         <div className="profile-right">
           <div className="summary">
             <div>
-              <span>리뷰</span>
-              <strong>{profile.reviewCount}</strong>
+              <span>口コミ</span>
+              {/* <strong>{profile.reviewCount}</strong> */}
+              <strong>3</strong>
             </div>
           </div>
         </div>
