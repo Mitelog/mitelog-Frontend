@@ -2,6 +2,9 @@ import React from "react";
 
 interface Props {
   profile: {
+    // reviewCount: number;
+    // bookmarkCount: number;
+    // restaurantCount: number;
     reviewCount: number;
     bookmarkCount: number;
     restaurantCount: number;
@@ -21,7 +24,8 @@ const UserTabs: React.FC<Props> = ({ profile, activeTab, setActiveTab }) => {
         onClick={() => setActiveTab("review")}
       >
         <span>口コミ</span>
-        <strong>{profile.reviewCount}</strong>
+        {/* <strong>{profile.reviewCount}</strong> */}
+        <strong>3</strong>
       </div>
 
       {/* 등록 가게 */}
@@ -30,7 +34,8 @@ const UserTabs: React.FC<Props> = ({ profile, activeTab, setActiveTab }) => {
         onClick={() => setActiveTab("restaurant")}
       >
         <span>登録店舗</span>
-        <strong>{profile.restaurantCount}</strong>
+        {/* <strong>{profile.restaurantCount}</strong> */}
+        <strong>2</strong>
       </div>
 
       {/* 북마크 */}
@@ -39,7 +44,8 @@ const UserTabs: React.FC<Props> = ({ profile, activeTab, setActiveTab }) => {
         onClick={() => setActiveTab("bookmark")}
       >
         <span>ブックマーク</span>
-        <strong>{profile.bookmarkCount}</strong>
+        {/* <strong>{profile.bookmarkCount}</strong> */}
+        <strong>2</strong>
       </div>
     </div>
   );
