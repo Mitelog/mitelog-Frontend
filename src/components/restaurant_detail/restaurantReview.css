@@ -412,3 +412,38 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   transform: translateY(-1px);
 }
+
+/* ✅ 리뷰 카드 하단: 날짜(좌) / 좋아요(우) */
+.review-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 왼쪽 날짜, 오른쪽 버튼 */
+  margin-top: 10px;
+}
+
+/* 날짜(왼쪽) */
+.review-date {
+  font-size: 13px;
+  color: #666;
+}
+
+/* 좋아요 버튼(오른쪽) */
+.like-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fff;
+  color: #444;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.like-button:hover {
+  background: #f9fafb;
+  border-color: #e2e8f0;
+  transform: translateY(-1px);
+}

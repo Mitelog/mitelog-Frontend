@@ -9,6 +9,7 @@ interface Review {
   rating: number;
   content: string;
   createdAt: string;
+  likeCount?: number;
 }
 
 const ReviewList: React.FC = () => {
@@ -26,8 +27,7 @@ const ReviewList: React.FC = () => {
       const res = await axiosApi.get(`/reviews/member/me`, {
         params: { page: pageNum, size: pageSize },
       });
-
-      setReviews(res.data.content); // ✅ Page 객체 content
+      setReviews(res.data.content);
       setTotalPages(res.data.totalPages);
     } catch (err) {
       console.error("내 리뷰 불러오기 실패:", err);
@@ -44,40 +44,45 @@ const ReviewList: React.FC = () => {
 
   return (
     <div className="restaurant-review-section">
-      {/* 상단 영역 */}
       <div className="review-header-row">
         <h3>私のレビュー</h3>
       </div>
 
-      {/* ✅ 리뷰 목록 */}
       {reviews.length === 0 ? (
         <p className="no-review-text">まだレビューがありません。</p>
       ) : (
         <div className="review-list">
           {reviews.map((r) => (
             <div className="review-card" key={r.id}>
-              {/* 상단: 가게명 + 평점 */}
               <div className="review-header">
                 <span className="review-restaurant">{r.restaurantName}</span>
                 <span className="review-rating">⭐ {r.rating}</span>
               </div>
 
-              {/* 제목 */}
               <h4 className="review-title">{r.title}</h4>
-
-              {/* 본문 */}
               <p className="review-content">{r.content}</p>
 
-              {/* 작성일 */}
-              <p className="review-date">
-                {new Date(r.createdAt).toLocaleDateString("ja-JP")}
-              </p>
+              {/* ✅ 하단: 날짜(왼쪽) — 좋아요 버튼(오른쪽) */}
+              <div className="review-footer">
+                <span className="review-date">
+                  {new Date(r.createdAt).toLocaleDateString("ja-JP")}
+                </span>
+
+                <button
+                  className="like-button"
+                  onClick={(e) => {
+                    e.stopPropagation(); // 카드 클릭과 겹칠 일 있을 때 대비
+                  }}
+                  type="button"
+                >
+                  👍 {r.likeCount ?? 0}
+                </button>
+              </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* ✅ 페이지네이션 */}
       {totalPages > 1 && (
         <div className="pagination-container">
           <button
