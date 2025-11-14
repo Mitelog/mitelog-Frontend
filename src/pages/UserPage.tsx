@@ -5,7 +5,7 @@ import UserHeader from "../components/userpage/UserHeader";
 import UserTabs from "../components/userpage/UserTabs";
 import UserContent from "../components/userpage/UserContent";
 import FollowButton from "../components/userpage/FollowButton";
-import "../styles/userpage.css";
+import "/src/styles/userpage.css";
 
 interface Profile {
   id: number;

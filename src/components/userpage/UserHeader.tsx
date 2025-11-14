@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import FollowListModal from "../common/FollowListModal";
-import "../../styles/userpage.css";
+import "/src/styles/userpage.css";
 
 interface Props {
   profile: {
@@ -16,7 +16,9 @@ interface Props {
 }
 
 const UserHeader: React.FC<Props> = ({ profile }) => {
-  const [openType, setOpenType] = useState<"followers" | "following" | null>(null);
+  const [openType, setOpenType] = useState<"followers" | "following" | null>(
+    null
+  );
 
   return (
     <div className="user-header">

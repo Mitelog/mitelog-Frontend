@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/admin-header.css";
+import "/src/styles/admin-header.css";
 
 const AdminHeader: React.FC = () => {
   const handleLogout = () => {

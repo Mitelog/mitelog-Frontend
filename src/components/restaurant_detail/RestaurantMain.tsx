@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/restaurantMain.css";
+import "/src/styles/restaurantMain.css";
 
 interface Props {
   restaurant: {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axiosApi from "../../api/axiosApi";
-import "../../styles/mypageEditModal.css";
+import "/src/styles/mypageEditModal.css";
 
 interface Props {
   userId: number;
@@ -37,7 +37,12 @@ const MypageEditModal: React.FC<Props> = ({
 
   // ✅ 회원탈퇴 (DELETE)
   const handleDelete = async () => {
-    if (!window.confirm("本当に退会しますか？\n(すべてのレビューや予約が削除されます)")) return;
+    if (
+      !window.confirm(
+        "本当に退会しますか？\n(すべてのレビューや予約が削除されます)"
+      )
+    )
+      return;
 
     try {
       await axiosApi.delete(`/members/${userId}`);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axiosApi from "../api/axiosApi";
-import "../styles/restaurantDetail.css";
+import "/src/styles/restaurantDetail.css";
 
 import RestaurantHeader from "../components/restaurant_detail/RestaurantHeader";
 import RestaurantTabs from "../components/restaurant_detail/RestaurantTabs";

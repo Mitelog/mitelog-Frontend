@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import MenuList from "../menu/MenuList";
 import MenuForm from "../menu/MenuForm";
-import "../../styles/restaurantMenu.css";
+import "/src/styles/restaurantMenu.css";
 
 interface RestaurantMenuProps {
   restaurantId: number;

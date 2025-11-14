@@ -1,8 +1,13 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import "../../styles/sidebar.css";
+import "/src/styles/sidebar.css";
 import { Box, Flex, Text } from "@chakra-ui/react";
-import { FaUser, FaStore, FaCommentDots, FaTachometerAlt } from "react-icons/fa";
+import {
+  FaUser,
+  FaStore,
+  FaCommentDots,
+  FaTachometerAlt,
+} from "react-icons/fa";
 
 const menuItems = [
   { name: "대시보드", path: "/admin", icon: <FaTachometerAlt /> },

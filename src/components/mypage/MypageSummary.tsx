@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/mypage.css";
+import "/src/styles/mypage.css";
 
 interface Props {
   reviewCount: number;

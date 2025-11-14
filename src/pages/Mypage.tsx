@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosApi from "../api/axiosApi";
-import "../styles/mypage.css";
+import "/src/styles/mypage.css";
 import MypageHeader from "../components/mypage/MypageHeader";
 import MypageTabs from "../components/mypage/MypageTabs";
 import MypageContent from "../components/mypage/MypageContent";
@@ -35,9 +35,8 @@ const Mypage: React.FC = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  const handleOpenModal = (
-    type: "followers" | "following" | "edit"
-  ) => setModalType(type);
+  const handleOpenModal = (type: "followers" | "following" | "edit") =>
+    setModalType(type);
   const handleCloseModal = () => setModalType(null);
 
   if (!profile) return <p className="loading-text">読み込み中...</p>;
