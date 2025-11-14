@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosApi from "../../api/axiosApi";
-import "./bookmarkButton.css"; // 👈 추가
+import "../../styles/bookmarkButton.css";
 
 type Props = { restaurantId: number };
 

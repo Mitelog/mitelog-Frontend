@@ -4,7 +4,7 @@ import BookmarkButton from "./BookmarkButton";
 import ReservationModal from "./ReservationModal";
 import "./bookmarkButton.css";
 import "../../styles/reservationModal.css"; // 모달 스타일
-import "./restaurantHeader.css";
+import "../../styles/restaurantHeader.css";
 
 interface Props {
   restaurant: {

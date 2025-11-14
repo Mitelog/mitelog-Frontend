@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axiosApi from "../../api/axiosApi";
 import RestaurantReviewForm from "./RestaurantReviewForm";
 import RestaurantReviewList from "./RestaurantReviewList";
-import "./restaurantReview.css";
+import "../../styles/restaurantReview.css";
 
 interface Review {
   id: number;

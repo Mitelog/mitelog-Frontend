@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import MenuList from "../menu/MenuList";
 import MenuForm from "../menu/MenuForm";
-import "./restaurantMenu.css";
+import "../../styles/restaurantMenu.css";
 
 interface RestaurantMenuProps {
   restaurantId: number;
@@ -87,7 +87,10 @@ const RestaurantMenu: React.FC<RestaurantMenuProps> = ({
             {/* ✅ 이미지가 없어도 자리 유지 */}
             <div className="menu-image-wrap">
               <img
-                src={menu.imageUrl || "https://via.placeholder.com/400x250?text=No+Image"}
+                src={
+                  menu.imageUrl ||
+                  "https://via.placeholder.com/400x250?text=No+Image"
+                }
                 alt={menu.name}
                 className="menu-image"
               />
@@ -114,10 +117,7 @@ const RestaurantMenu: React.FC<RestaurantMenuProps> = ({
       {/* ✅ 메뉴 등록/수정 모달 */}
       {isModalOpen && (
         <div className="modal-overlay" onClick={handleCancel}>
-          <div
-            className="modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <button className="modal-close-btn" onClick={handleCancel}>
               ✕
             </button>
