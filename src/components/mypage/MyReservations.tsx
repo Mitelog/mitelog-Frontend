@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import "../restaurant_detail/restaurantReview.css";
+import "/src/styles/restaurantReview.css";
 import { useNavigate } from "react-router-dom";
 
 type ReservationStatus = "確定" | "保留" | "キャンセル";

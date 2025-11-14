@@ -1,7 +1,7 @@
 // src/components/mypage/MyBookmarks.tsx
 import React, { useEffect, useMemo, useState } from "react";
 import axiosApi from "../../api/axiosApi";
-import "../restaurant_detail/restaurantReview.css";
+import "/src/styles/restaurantReview.css";
 
 type RestaurantCardData = {
   id: number;

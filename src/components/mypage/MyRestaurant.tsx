@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosApi from "../../api/axiosApi";
-import "../restaurant_detail/restaurantReview.css"; // 북마크/리뷰 공용 CSS
+import "/src/styles/restaurantReview.css"; // 북마크/리뷰 공용 CSS
 import { useNavigate } from "react-router-dom";
 
 interface Restaurant {

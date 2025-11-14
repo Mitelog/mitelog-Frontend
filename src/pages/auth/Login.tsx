@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosAuth from "../api/axiosAuth";
-import "../styles/login.css";
+import axiosAuth from "../../api/axiosAuth";
+import "/src/styles/login.css";
 
 interface LoginResponse {
   status: number;

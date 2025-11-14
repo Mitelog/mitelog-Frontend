@@ -1,5 +1,5 @@
 import React from "react";
-import "./restaurantMain.css";
+import "/src/styles/restaurantMain.css";
 
 interface Props {
   restaurant: {
@@ -131,11 +131,7 @@ const RestaurantMain: React.FC<Props> = ({ restaurant }) => {
 
           <tr>
             <th>予約可否</th>
-            <td>
-              {restaurant.reservationAvailable
-                ? "予約可能"
-                : "予約不可"}
-            </td>
+            <td>{restaurant.reservationAvailable ? "予約可能" : "予約不可"}</td>
           </tr>
 
           <tr>

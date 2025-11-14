@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosApi from "../../api/axiosApi"; // ✅ 수정
-import "../../styles/followModal.css";
+import "/src/styles/followModal.css";
 
 interface FollowUser {
   memberId: number;
@@ -31,7 +31,9 @@ const FollowListModal: React.FC<Props> = ({ userId, type, onClose }) => {
   return (
     <div className="follow-modal-overlay">
       <div className="follow-modal">
-        <button className="close-btn" onClick={onClose}>×</button>
+        <button className="close-btn" onClick={onClose}>
+          ×
+        </button>
         <h3>{type === "followers" ? "フォロワー一覧" : "フォロー中一覧"}</h3>
 
         {loading ? (

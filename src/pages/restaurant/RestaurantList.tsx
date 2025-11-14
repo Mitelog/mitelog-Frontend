@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosApi from "../api/axiosApi";
-import FilterSidebar from "../components/sidebar/FilterSidebar";
-import "../styles/restaurantList.css";
+import axiosApi from "../../api/axiosApi";
+import FilterSidebar from "../../components/sidebar/FilterSidebar";
+import "/src/styles/restaurantList.css";
 
 /* ─────────── 안정화된 미니 캐러셀 ─────────── */
 type CarouselProps = {

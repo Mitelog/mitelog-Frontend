@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BookmarkButton from "./BookmarkButton";
 import ReservationModal from "./ReservationModal";
-import "./bookmarkButton.css";
-import "../../styles/reservationModal.css"; // 모달 스타일
-import "./restaurantHeader.css";
+import "/src/styles/bookmarkButton.css";
+import "/src/styles/reservationModal.css"; // 모달 스타일
+import "/src/styles/restaurantHeader.css";
 
 interface Props {
   restaurant: {

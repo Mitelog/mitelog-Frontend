@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axiosApi from "../api/axiosApi";
-import "../styles/restaurantForm.css";
+import axiosApi from "../../api/axiosApi";
+import "/src/styles/restaurantForm.css";
 
 interface RestaurantFormData {
   name: string;

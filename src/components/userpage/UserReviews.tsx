@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../restaurant_detail/restaurantReview.css";
+import "/src/styles/restaurantReview.css";
 
 interface Review {
   id: number;

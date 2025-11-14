@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosApi from "../../api/axiosApi";
-import "../restaurant_detail/restaurantReview.css";
+import "/src/styles/restaurantReview.css";
 
 interface Review {
   id: number;

@@ -1,16 +1,21 @@
 import React, { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
 import AdminHeader from "./components/admin/AdminHeader";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Mypage from "./pages/Mypage";
-import RestaurantList from "./pages/RestaurantList";
-import RestaurantDetail from "./pages/RestaurantDetail";
-import RestaurantForm from "./pages/RestaurantForm";
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
+import Mypage from "./pages/mypage/Mypage";
+import RestaurantList from "./pages/restaurant/RestaurantList";
+import RestaurantDetail from "./pages/restaurant/RestaurantDetail";
+import RestaurantForm from "./pages/restaurant/RestaurantForm";
 import MainPage from "./pages/MainPage";
-import UserPage from "./pages/UserPage";
+import UserPage from "./pages/user/UserPage";
 import "./App.css";
 
 /* ✅ Lazy load로 관리자 관련 모듈만 분리 */
@@ -20,7 +25,9 @@ const AdminMembers = lazy(() => import("./pages/admin/AdminMembers"));
 const AdminRestaurants = lazy(() => import("./pages/admin/AdminRestaurants"));
 const AdminReviews = lazy(() => import("./pages/admin/AdminReviews"));
 const AdminMemberEdit = lazy(() => import("./pages/admin/AdminMemberEdit"));
-const AdminRestaurantEdit = lazy(() => import("./pages/admin/AdminRestaurantEdit"));
+const AdminRestaurantEdit = lazy(
+  () => import("./pages/admin/AdminRestaurantEdit")
+);
 const AdminReviewEdit = lazy(() => import("./pages/admin/AdminReviewEdit"));
 
 /* ✅ 페이지 전환 감지용 */
@@ -56,7 +63,10 @@ const AppContent: React.FC = () => {
               <Route path="restaurants" element={<AdminRestaurants />} />
               <Route path="reviews" element={<AdminReviews />} />
               <Route path="members/:id/edit" element={<AdminMemberEdit />} />
-              <Route path="restaurants/:id/edit" element={<AdminRestaurantEdit />} />
+              <Route
+                path="restaurants/:id/edit"
+                element={<AdminRestaurantEdit />}
+              />
               <Route path="reviews/:id/edit" element={<AdminReviewEdit />} />
             </Route>
 
