@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosApi from "../../api/axiosApi";
-import "../../styles/menuList.css";
+import "/src/styles/menuList.css";
 
 interface Menu {
   id: number;

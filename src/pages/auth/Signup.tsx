@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import axiosAuth from "../api/axiosAuth";
-import "../styles/signup.css";
+import axiosAuth from "../../api/axiosAuth";
+import "/src/styles/signup.css";
 
 interface SignupRequest {
   email: string;

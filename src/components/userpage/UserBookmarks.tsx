@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import "../restaurant_detail/restaurantReview.css";
+import "/src/styles/restaurantReview.css";
 
 interface RestaurantCardData {
   id: number;

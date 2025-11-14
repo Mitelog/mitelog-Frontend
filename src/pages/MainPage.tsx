@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/mainpage.css";
+import "/src/styles/mainpage.css";
 
 const PlaceholderCard: React.FC<{ sub?: string }> = ({ sub }) => (
   <div className="ranking-item">

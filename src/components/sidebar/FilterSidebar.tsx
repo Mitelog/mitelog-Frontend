@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../styles/filterSidebar.css";
+import "/src/styles/filterSidebar.css";
 
 interface FilterSidebarProps {
   onFilterChange: (filters: {
