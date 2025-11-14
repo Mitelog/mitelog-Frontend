@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axiosApi from "../api/axiosApi"; // ✅ 커스텀 axios 인스턴스 사용
-import UserHeader from "../components/userpage/UserHeader";
-import UserTabs from "../components/userpage/UserTabs";
-import UserContent from "../components/userpage/UserContent";
-import FollowButton from "../components/userpage/FollowButton";
+import axiosApi from "../../api/axiosApi"; // ✅ 커스텀 axios 인스턴스 사용
+import UserHeader from "../../components/userpage/UserHeader";
+import UserTabs from "../../components/userpage/UserTabs";
+import UserContent from "../../components/userpage/UserContent";
+import FollowButton from "../../components/userpage/FollowButton";
 import "/src/styles/userpage.css";
 
 interface Profile {

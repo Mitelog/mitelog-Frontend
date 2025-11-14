@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axiosAuth from "../api/axiosAuth";
+import axiosAuth from "../../api/axiosAuth";
 import "/src/styles/signup.css";
 
 interface SignupRequest {

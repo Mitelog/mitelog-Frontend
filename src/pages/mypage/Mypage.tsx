@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import axiosApi from "../api/axiosApi";
+import axiosApi from "../../api/axiosApi";
 import "/src/styles/mypage.css";
-import MypageHeader from "../components/mypage/MypageHeader";
-import MypageTabs from "../components/mypage/MypageTabs";
-import MypageContent from "../components/mypage/MypageContent";
-import FollowListModal from "../components/common/FollowListModal";
-import MypageEditModal from "../components/mypage/MypageEditModal";
+import MypageHeader from "../../components/mypage/MypageHeader";
+import MypageTabs from "../../components/mypage/MypageTabs";
+import MypageContent from "../../components/mypage/MypageContent";
+import FollowListModal from "../../components/common/FollowListModal";
+import MypageEditModal from "../../components/mypage/MypageEditModal";
 
 interface MypageProfile {
   id: number;
