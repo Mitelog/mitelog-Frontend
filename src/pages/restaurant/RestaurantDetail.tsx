@@ -4,9 +4,9 @@ import { jwtDecode } from "jwt-decode";
 import axiosApi from "../../api/axiosApi";
 import "/src/styles/restaurantDetail.css";
 
-import RestaurantHeader from "../../components/restaurant_detail/RestaurantHeader";
-import RestaurantTabs from "../../components/restaurant_detail/RestaurantTabs";
-import RestaurantContent from "../../components/restaurant_detail/RestaurantContent";
+import RestaurantHeader from "../../components/restaurant/RestaurantHeader";
+import RestaurantTabs from "../../components/restaurant/RestaurantTabs";
+import RestaurantContent from "../../components/restaurant/RestaurantContent";
 
 // ✅ JWT Payload 타입 정의
 interface JwtPayload {

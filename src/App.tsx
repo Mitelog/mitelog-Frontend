@@ -5,8 +5,8 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
 import AdminHeader from "./components/admin/AdminHeader";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
