@@ -81,3 +81,82 @@ textarea {
   background-color: #eef;
   border-color: #88a;
 }
+
+/* ✅ 영업시간 설정 영역 */
+.hours-section {
+  margin-top: 2rem;
+}
+
+.hours-section p {
+  font-weight: bold;
+  margin-bottom: 0.8rem;
+}
+
+/* ✅ 영업시간 테이블 */
+.hours-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fafafa;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.hours-table thead {
+  background-color: #f2f2f2;
+}
+
+.hours-table th,
+.hours-table td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.95rem;
+}
+
+.hours-table th {
+  font-weight: bold;
+  color: #555;
+}
+
+/* 마지막 줄 border 제거 */
+.hours-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 요일 컬럼 강조 */
+.hours-table td:first-child {
+  font-weight: bold;
+  color: #333;
+}
+
+/* 체크박스 중앙 정렬 */
+.hours-table input[type="checkbox"] {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+/* 시간 input */
+.hours-table input[type="time"] {
+  padding: 4px 6px;
+  font-size: 0.9rem;
+}
+
+/* 비활성화된 시간 input */
+.hours-table input[type="time"]:disabled {
+  background-color: #e9e9e9;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* 모바일 대응 */
+@media (max-width: 480px) {
+  .hours-table th,
+  .hours-table td {
+    padding: 6px;
+    font-size: 0.85rem;
+  }
+
+  .hours-table input[type="time"] {
+    width: 100%;
+  }
+}
