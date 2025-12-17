@@ -447,3 +447,42 @@
   border-color: #e2e8f0;
   transform: translateY(-1px);
 }
+
+/* =========================
+   Reservation Modal
+========================= */
+
+.reservation-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.reservation-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reservation-main {
+  font-weight: 700;
+}
+
+.reservation-sub {
+  font-size: 13px;
+  color: #555;
+}
+
+.cancel-btn-inline {
+  background: #fee2e2;
+  color: #991b1b;
+  font-weight: 600;
+}
+
+.cancel-btn-inline:hover {
+  background: #fecaca;
+}
