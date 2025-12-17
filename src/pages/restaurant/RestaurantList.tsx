@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosApi from "../../api/axiosApi";
-import FilterSidebar from "../../components/sidebar/FilterSidebar";
+import FilterSidebar, {
+  RestaurantListFilters,
+} from "../../components/sidebar/FilterSidebar";
 import "/src/styles/restaurantList.css";
 
 /* ─────────── 안정화된 미니 캐러셀 ─────────── */
@@ -33,7 +35,6 @@ const ImageCarousel: React.FC<CarouselProps> = ({
   const prev = () => setIdx((p) => (p - 1 + safe.length) % safe.length);
   const goto = (i: number) => setIdx(i);
 
-  // 드래그 시작은 "내 트랙"에서만
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
@@ -54,7 +55,6 @@ const ImageCarousel: React.FC<CarouselProps> = ({
     };
   }, []);
 
-  // move/up은 전역으로 받되, dragging일 때만 내 인스턴스가 처리
   useEffect(() => {
     const onMove = (e: TouchEvent | MouseEvent) => {
       if (!dragging) return;
@@ -159,47 +159,93 @@ interface Restaurant {
   id: number;
   name: string;
   address: string;
-  ownerName?: string;
-  category?: string;
-  averageRating?: number;
-  thumbnailUrl?: string;
-  images?: string[]; // ✅ 여러 장 지원
-  phone?: string; // ✅ 있으면 퀵액션에서 사용
+  area?: string;
+
+  image?: string | null;
+  categoryNames?: string[];
+  averageRating?: number | null;
+  phone?: string | null;
+
+  // UI용
+  images?: string[];
 }
 
 const RestaurantList: React.FC = () => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-  const [filters, setFilters] = useState({
+
+  // ✅ 서버 DTO 키와 동일한 filters
+  const [filters, setFilters] = useState<RestaurantListFilters>({
     keyword: "",
-    region: "",
+    area: "",
     category: "",
   });
+
+  // ✅ 페이징
+  const [page, setPage] = useState(0); // 0-based
+  const [size, setSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem("accessToken");
+
+  // ✅ 필터가 바뀌면 page=0
+  useEffect(() => {
+    setPage(0);
+  }, [filters]);
 
   useEffect(() => {
     const fetchRestaurants = async () => {
       setLoading(true);
-      try {
-        const res = await axiosApi.get("/restaurants", { params: filters });
-        const data = res.data.content || [];
+      setError(null);
 
-        /* 🔥 MOCK 주입(테스트용): 이미지 없을 때 2~3장 넣기 */
+      try {
+        // ✅ 서버가 받는 형태로 params 구성
+        const params: any = {
+          page,
+          size,
+
+          keyword: filters.keyword || undefined,
+          area: filters.area || undefined,
+          category: filters.category || undefined,
+
+          creditCard: filters.creditCard ? true : undefined,
+          parkingArea: filters.parkingArea ? true : undefined,
+          privateRoom: filters.privateRoom ? true : undefined,
+          smoking: filters.smoking ? true : undefined,
+          unlimitDrink: filters.unlimitDrink ? true : undefined,
+          unlimitFood: filters.unlimitFood ? true : undefined,
+        };
+
+        const res = await axiosApi.get("/restaurants", { params });
+
+        const pageData = res.data; // Spring Page
+        const data: Restaurant[] = pageData.content || [];
+
+        // 🔥 MOCK 이미지 주입(테스트용) - 서버 image가 있으면 그걸 우선 사용
         const withImages: Restaurant[] = data.map((raw: any, idx: number) => {
           const seed = raw.id ?? idx;
           const picsum = (n: number) =>
             `https://picsum.photos/seed/${seed}-${n}/240/240`;
+
+          const baseImg = raw.image || raw.thumbnailUrl;
+
           const injected = raw.images?.length
             ? raw.images
-            : raw.thumbnailUrl
-            ? [raw.thumbnailUrl, picsum(2)]
+            : baseImg
+            ? [baseImg, picsum(2)]
             : [picsum(1), picsum(2), picsum(3)];
+
           return { ...raw, images: injected };
         });
 
         setRestaurants(withImages);
+
+        setTotalPages(pageData.totalPages ?? 0);
+        setTotalElements(pageData.totalElements ?? 0);
       } catch (err) {
         console.error("식당 목록 조회 실패:", err);
         setError("データの取得に失敗しました。");
@@ -207,8 +253,9 @@ const RestaurantList: React.FC = () => {
         setLoading(false);
       }
     };
+
     fetchRestaurants();
-  }, [filters]);
+  }, [page, size, filters]);
 
   /* ─────────── 퀵액션 핸들러 ─────────── */
   const buildDetailUrl = (id: number) => `${location.origin}/restaurants/${id}`;
@@ -222,9 +269,7 @@ const RestaurantList: React.FC = () => {
         await navigator.clipboard.writeText(url);
         alert("링크가 클립보드에 복사되었습니다.");
       }
-    } catch {
-      // 사용자가 공유 취소 등
-    }
+    } catch {}
   };
 
   const handleMap = (e: React.MouseEvent, r: Restaurant) => {
@@ -234,13 +279,22 @@ const RestaurantList: React.FC = () => {
     window.open(mapUrl, "_blank", "noopener,noreferrer");
   };
 
-  // 전화는 <a href="tel:...">가 가장 호환성이 좋음 (아래 JSX에서 처리)
-
   return (
     <div className="restaurant-page">
       {/* 왼쪽 필터 */}
       <FilterSidebar
-        onFilterChange={(patch) => setFilters((cur) => ({ ...cur, ...patch }))}
+        onFilterChange={(patch) =>
+          setFilters((cur) => ({
+            ...cur,
+            ...patch,
+
+            // ✅ patch에서 빈 문자열이 오면 그대로 반영(리셋에 유리)
+            keyword: patch.keyword !== undefined ? patch.keyword : cur.keyword,
+            area: patch.area !== undefined ? patch.area : cur.area,
+            category:
+              patch.category !== undefined ? patch.category : cur.category,
+          }))
+        }
       />
 
       {/* 오른쪽 메인 */}
@@ -258,6 +312,13 @@ const RestaurantList: React.FC = () => {
             </button>
           )}
         </div>
+
+        {/* ✅ 페이징 정보 표시 (상단) */}
+        {!loading && !error && (
+          <div style={{ fontSize: 13, color: "#666", margin: "8px 0 14px" }}>
+            {totalElements} 件
+          </div>
+        )}
 
         {loading && (
           <div>
@@ -284,122 +345,160 @@ const RestaurantList: React.FC = () => {
               該当するレストランが見つかりません。
             </div>
           ) : (
-            <ul className="restaurant-list">
-              {restaurants.map((r) => (
-                <li
-                  key={r.id}
-                  className="restaurant-card hover-grow"
-                  onClick={() => navigate(`/restaurants/${r.id}`)}
+            <>
+              <ul className="restaurant-list">
+                {restaurants.map((r) => (
+                  <li
+                    key={r.id}
+                    className="restaurant-card hover-grow"
+                    onClick={() => navigate(`/restaurants/${r.id}`)}
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      padding: 14,
+                      cursor: "pointer",
+                      position: "relative",
+                    }}
+                  >
+                    <ImageCarousel
+                      key={r.id}
+                      images={r.images}
+                      size={120}
+                      rounded={10}
+                    />
+
+                    <div
+                      className="quick-actions"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {r.phone && (
+                        <a
+                          className="qa-btn"
+                          href={`tel:${r.phone}`}
+                          onClick={(e) => e.stopPropagation()}
+                          aria-label="전화 걸기"
+                          title="전화"
+                        >
+                          📞
+                        </a>
+                      )}
+
+                      <button
+                        className="qa-btn"
+                        onClick={(e) => handleMap(e, r)}
+                        aria-label="지도에서 보기"
+                        title="지도"
+                      >
+                        🗺️
+                      </button>
+
+                      <button
+                        className="qa-btn"
+                        onClick={(e) => handleShare(e, r)}
+                        aria-label="공유하기"
+                        title="공유"
+                      >
+                        🔗
+                      </button>
+                    </div>
+
+                    <div
+                      className="restaurant-info"
+                      style={{ flex: 1, minWidth: 0 }}
+                    >
+                      <h3
+                        className="restaurant-name"
+                        style={{ margin: "2px 0 6px", fontWeight: 700 }}
+                      >
+                        {r.name}
+                      </h3>
+
+                      <p
+                        className="restaurant-address"
+                        style={{ margin: 0, color: "#666" }}
+                      >
+                        {r.address}
+                      </p>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: 8,
+                          marginTop: 6,
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        {/* ✅ categoryNames 대응 */}
+                        {r.categoryNames?.length ? (
+                          <span
+                            style={{
+                              fontSize: 12,
+                              padding: "4px 10px",
+                              border: "1px solid rgba(0,0,0,.12)",
+                              borderRadius: 999,
+                              background: "#fff",
+                            }}
+                          >
+                            カテゴリ: {r.categoryNames.join(", ")}
+                          </span>
+                        ) : null}
+
+                        {typeof r.averageRating === "number" &&
+                          r.averageRating !== null && (
+                            <span
+                              style={{
+                                fontSize: 12,
+                                padding: "4px 10px",
+                                border: "1px solid rgba(0,0,0,.12)",
+                                borderRadius: 999,
+                                background: "#fff",
+                              }}
+                            >
+                              ⭐ {Number(r.averageRating).toFixed(1)}
+                            </span>
+                          )}
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+
+              {/* ✅ 페이지네이션 (하단) */}
+              {totalPages > 1 && (
+                <div
+                  className="pagination"
                   style={{
                     display: "flex",
-                    gap: 12,
-                    padding: 14,
-                    cursor: "pointer",
-                    position: "relative",
+                    gap: 10,
+                    marginTop: 18,
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  {/* 썸네일 캐러셀 */}
-                  <ImageCarousel
-                    key={r.id}
-                    images={r.images}
-                    size={120}
-                    rounded={10}
-                  />
-
-                  {/* ✅ 호버 시 퀵액션 */}
-                  <div
-                    className="quick-actions"
-                    onClick={(e) => e.stopPropagation()}
+                  <button
+                    className="btn-soft"
+                    disabled={page === 0}
+                    onClick={() => setPage((p) => Math.max(0, p - 1))}
                   >
-                    {/* 전화 (전화번호 있는 경우만 노출) */}
-                    {r.phone && (
-                      <a
-                        className="qa-btn"
-                        href={`tel:${r.phone}`}
-                        onClick={(e) => e.stopPropagation()}
-                        aria-label="전화 걸기"
-                        title="전화"
-                      >
-                        📞
-                      </a>
-                    )}
+                    ← Prev
+                  </button>
 
-                    {/* 지도 열기 */}
-                    <button
-                      className="qa-btn"
-                      onClick={(e) => handleMap(e, r)}
-                      aria-label="지도에서 보기"
-                      title="지도"
-                    >
-                      🗺️
-                    </button>
+                  <span style={{ fontSize: 13 }}>
+                    {page + 1} / {totalPages}
+                  </span>
 
-                    {/* 공유하기 */}
-                    <button
-                      className="qa-btn"
-                      onClick={(e) => handleShare(e, r)}
-                      aria-label="공유하기"
-                      title="공유"
-                    >
-                      🔗
-                    </button>
-                  </div>
-
-                  <div
-                    className="restaurant-info"
-                    style={{ flex: 1, minWidth: 0 }}
+                  <button
+                    className="btn-soft"
+                    disabled={page >= totalPages - 1}
+                    onClick={() =>
+                      setPage((p) => Math.min(totalPages - 1, p + 1))
+                    }
                   >
-                    <h3
-                      className="restaurant-name"
-                      style={{ margin: "2px 0 6px", fontWeight: 700 }}
-                    >
-                      {r.name}
-                    </h3>
-                    <p
-                      className="restaurant-address"
-                      style={{ margin: 0, color: "#666" }}
-                    >
-                      {r.address}
-                    </p>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: 8,
-                        marginTop: 6,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {r.category && (
-                        <span
-                          style={{
-                            fontSize: 12,
-                            padding: "4px 10px",
-                            border: "1px solid rgba(0,0,0,.12)",
-                            borderRadius: 999,
-                            background: "#fff",
-                          }}
-                        >
-                          カテゴリ: {r.category}
-                        </span>
-                      )}
-                      {typeof r.averageRating === "number" && (
-                        <span
-                          style={{
-                            fontSize: 12,
-                            padding: "4px 10px",
-                            border: "1px solid rgba(0,0,0,.12)",
-                            borderRadius: 999,
-                            background: "#fff",
-                          }}
-                        >
-                          ⭐ {r.averageRating.toFixed(1)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                    Next →
+                  </button>
+                </div>
+              )}
+            </>
           ))}
       </main>
     </div>

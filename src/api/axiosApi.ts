@@ -40,12 +40,7 @@ axiosApi.interceptors.response.use(
     const originalRequest = error.config;
 
     // ✅ 로그인 없이 접근 가능한 공개 API 경로
-    const publicUrls = [
-      "/api/restaurants",
-      "/api/menus",
-      "/api/categories",
-      "/api/reviews",
-    ];
+    const publicUrls = ["/restaurants", "/menus", "/categories", "/reviews"];
 
     const isPublic = publicUrls.some((path) => url.includes(path));
 
