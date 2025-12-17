@@ -1,62 +1,111 @@
 import React, { useState } from "react";
 import "/src/styles/filterSidebar.css";
 
+/**
+ * ✅ 백엔드 RestaurantSearchRequest와 "키 이름"을 1:1로 맞춘 타입
+ * - region -> area
+ * - details 중첩 제거 (query param은 평평하게 보내야 서버가 받기 쉬움)
+ * - parking -> parkingArea
+ * - unlimitedDrink -> unlimitDrink
+ * - unlimitedFood -> unlimitFood
+ */
+export type RestaurantListFilters = {
+  keyword: string;
+  area: string;
+  category: string;
+
+  creditCard?: boolean;
+  parkingArea?: boolean;
+  privateRoom?: boolean;
+  smoking?: boolean;
+  unlimitDrink?: boolean;
+  unlimitFood?: boolean;
+};
+
 interface FilterSidebarProps {
-  onFilterChange: (filters: {
-    keyword: string;
-    region: string;
-    category: string;
-    details?: {
-      creditCard?: boolean;
-      parking?: boolean;
-      privateRoom?: boolean;
-      smoking?: boolean;
-      unlimitedDrink?: boolean;
-      unlimitedFood?: boolean;
-    };
-  }) => void;
+  /**
+   * ✅ "부분 패치" 형태로 전달
+   * - 리스트 페이지에서 setFilters(cur => ({...cur, ...patch})) 하기 좋음
+   */
+  onFilterChange: (patch: Partial<RestaurantListFilters>) => void;
 }
 
 const FilterSidebar: React.FC<FilterSidebarProps> = ({ onFilterChange }) => {
   const [keyword, setKeyword] = useState("");
-  const [region, setRegion] = useState("");
+  const [area, setArea] = useState("");
   const [category, setCategory] = useState("");
+
+  // ✅ 서버 DTO 필드명 그대로 유지
   const [details, setDetails] = useState({
     creditCard: false,
-    parking: false,
+    parkingArea: false,
     privateRoom: false,
     smoking: false,
-    unlimitedDrink: false,
-    unlimitedFood: false,
+    unlimitDrink: false,
+    unlimitFood: false,
   });
 
   const handleToggle = (key: keyof typeof details) => {
     setDetails((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
+  /**
+   * ✅ 적용 버튼
+   * - 문자열 필터는 빈 값이면 보내지 않음(= 서버에서 null 처리와 동일)
+   * - Boolean 필터는 true인 것만 보내는 게 정석(체크된 조건만 필터)
+   */
   const handleApply = () => {
-    const cleaned = Object.fromEntries(
-      Object.entries({ keyword, region, category }).filter(([_, v]) => v !== "")
-    );
-    onFilterChange({
-      ...cleaned,
-      details,
+    const patch: Partial<RestaurantListFilters> = {
+      keyword: keyword.trim(),
+      area,
+      category,
+    };
+
+    // ✅ 빈 문자열이면 서버에 보내지 않도록 undefined 처리
+    if (!patch.keyword) delete patch.keyword;
+    if (!patch.area) delete patch.area;
+    if (!patch.category) delete patch.category;
+
+    // ✅ true인 것만 필터 조건으로 보냄
+    (Object.keys(details) as (keyof typeof details)[]).forEach((k) => {
+      if (details[k]) {
+        (patch as any)[k] = true;
+      }
     });
+
+    onFilterChange(patch);
   };
 
+  /**
+   * ✅ 리셋 버튼
+   * - 리스트 쪽에서도 깔끔하게 초기화되도록 "명시적으로" 초기값 전달
+   */
   const handleReset = () => {
     setKeyword("");
-    setRegion("");
+    setArea("");
     setCategory("");
     setDetails({
       creditCard: false,
-      parking: false,
+      parkingArea: false,
       privateRoom: false,
       smoking: false,
-      unlimitedDrink: false,
-      unlimitedFood: false,
+      unlimitDrink: false,
+      unlimitFood: false,
     });
-    onFilterChange({ keyword: "", region: "", category: "" });
+
+    onFilterChange({
+      keyword: "",
+      area: "",
+      category: "",
+
+      // ✅ 체크 조건들도 해제 의도 전달
+      creditCard: undefined,
+      parkingArea: undefined,
+      privateRoom: undefined,
+      smoking: undefined,
+      unlimitDrink: undefined,
+      unlimitFood: undefined,
+    });
   };
 
   return (
@@ -77,7 +126,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ onFilterChange }) => {
 
         <div className="filter-group">
           <label>地域</label>
-          <select value={region} onChange={(e) => setRegion(e.target.value)}>
+          <select value={area} onChange={(e) => setArea(e.target.value)}>
             <option value="">すべての地域</option>
             <option value="東京都">東京都</option>
             <option value="大阪府">大阪府</option>
@@ -104,17 +153,17 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ onFilterChange }) => {
         </div>
       </div>
 
-      {/* 💡 편의시설 (Grid 기반 카드형 버튼) */}
+      {/* 💡 편의시설 */}
       <div className="filter-card">
         <label className="filter-subtitle">こだわり条件</label>
         <div className="facility-grid">
           {[
             { key: "creditCard", label: "クレジットカード可" },
-            { key: "parking", label: "駐車場あり" },
+            { key: "parkingArea", label: "駐車場あり" },
             { key: "privateRoom", label: "個室あり" },
             { key: "smoking", label: "喫煙可" },
-            { key: "unlimitedDrink", label: "飲み放題あり" },
-            { key: "unlimitedFood", label: "食べ放題あり" },
+            { key: "unlimitDrink", label: "飲み放題あり" },
+            { key: "unlimitFood", label: "食べ放題あり" },
           ].map((item) => (
             <div
               key={item.key}
