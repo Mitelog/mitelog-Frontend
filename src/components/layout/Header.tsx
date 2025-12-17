@@ -51,12 +51,6 @@ const Header: React.FC = () => {
             <li>
               <a href="/restaurants">レストラン</a>
             </li>
-            <li>
-              <a href="/ranking">ランキング</a>
-            </li>
-            <li>
-              <a href="/review">口コミ</a>
-            </li>
 
             {/* ✅ 관리자 전용 메뉴 */}
             {userRole === "ADMIN" && (

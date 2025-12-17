@@ -1,56 +1,43 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "/src/styles/restaurantReview.css";
 import { useNavigate } from "react-router-dom";
+import axiosApi from "../../api/axiosApi";
 
+/* =========================
+   Types
+========================= */
 type ReservationStatus = "確定" | "保留" | "キャンセル";
 
-type Reservation = {
+type ApiReservation = {
+  id: number;
+  restaurantId: number;
+  memberId: number;
+  visit: string;     // "YYYY-MM-DDTHH:mm:ss"
+  numPeople: number;
+};
+
+type RestaurantApi = {
+  id: number;
+  name: string;
+  image: string | null;
+};
+
+type ReservationVM = {
   id: number;
   restaurantId: number;
   restaurantName: string;
-  date: string;
-  time: string;
+  date: string;  // YYYY-MM-DD
+  time: string;  // HH:mm
   people: number;
-  request?: string;
   status: ReservationStatus;
   createdAt: string;
   image?: string;
 };
 
-const MOCK: Reservation[] = [
-  {
-    id: 1003,
-    restaurantId: 11,
-    restaurantName: "재환",
-    date: "2025-11-10",
-    time: "19:00",
-    people: 4,
-    request: "誕生日ケーキの持ち込み可否を確認したいです。",
-    status: "キャンセル",
-    createdAt: "2025-10-18T20:03:00",
-  },
-  {
-    id: 1002,
-    restaurantId: 8,
-    restaurantName: "인태집",
-    date: "2025-11-05",
-    time: "12:00",
-    people: 3,
-    status: "保留",
-    createdAt: "2025-10-21T09:22:00",
-  },
-  {
-    id: 1001,
-    restaurantId: 6,
-    restaurantName: "가게이름",
-    date: "2025-11-02",
-    time: "18:30",
-    people: 2,
-    request: "窓側の席をお願いします。",
-    status: "確定",
-    createdAt: "2025-10-20T12:10:00",
-  },
-];
+/* =========================
+   Utils
+========================= */
+const PAGE_SIZE = 5;
 
 const statusChip = (s: ReservationStatus) =>
   s === "確定"
@@ -59,25 +46,169 @@ const statusChip = (s: ReservationStatus) =>
     ? "chip status-pending"
     : "chip status-cancel";
 
-const dtKey = (r: Reservation) => `${r.date} ${r.time}`;
-const PAGE_SIZE = 5;
+const dtKey = (r: ReservationVM) => `${r.date} ${r.time}`;
 
+function splitVisit(visit: string) {
+  const [date, t] = visit.split("T");
+  const time = (t || "00:00:00").slice(0, 5);
+  return { date, time };
+}
+
+/* =========================
+   Component
+========================= */
 const MyReservations: React.FC = () => {
   const navigate = useNavigate();
 
-  const sorted = useMemo(
-    () => [...MOCK].sort((a, b) => (dtKey(a) < dtKey(b) ? 1 : -1)),
-    []
-  );
+  const [rows, setRows] = useState<ReservationVM[]>([]);
+  const [restaurantMap, setRestaurantMap] = useState<
+    Record<number, { name: string; image?: string }>
+  >({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [page, setPage] = useState(0);
+
+  const fallback =
+    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=400&fit=crop&q=60&auto=format";
+
+  /* =========================
+     1) 예약 목록 조회
+  ========================= */
+  useEffect(() => {
+    const fetchReservations = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        // ✅ 인증 필요
+        const res = await axiosApi.get<ApiReservation[]>("/reservations/me");
+        const list = res.data ?? [];
+
+        const vm: ReservationVM[] = list.map((r) => {
+          const { date, time } = splitVisit(r.visit);
+          return {
+            id: r.id,
+            restaurantId: r.restaurantId,
+            restaurantName: `Restaurant #${r.restaurantId}`, // 임시 → 아래에서 채움
+            date,
+            time,
+            people: r.numPeople,
+            status: "確定",        // 백에 status 없으므로 기본값
+            createdAt: r.visit,    // createdAt 없어서 visit 사용
+            image: undefined,
+          };
+        });
+
+        setRows(vm);
+
+        /* =========================
+           2) 필요한 식당 정보만 추가 조회
+        ========================= */
+        const ids = Array.from(new Set(vm.map((x) => x.restaurantId)));
+        const need = ids.filter((id) => !restaurantMap[id]);
+
+        if (need.length > 0) {
+          const results = await Promise.all(
+            need.map(async (id) => {
+              try {
+                const rr = await axiosApi.get<RestaurantApi>(`/restaurants/${id}`);
+                const data = rr.data;
+                return {
+                  id,
+                  name: data?.name ?? `Restaurant #${id}`,
+                  image: data?.image ?? undefined,
+                };
+              } catch {
+                return { id, name: `Restaurant #${id}`, image: undefined };
+              }
+            })
+          );
+
+          setRestaurantMap((prev) => {
+            const next = { ...prev };
+            results.forEach((r) => {
+              next[r.id] = { name: r.name, image: r.image };
+            });
+            return next;
+          });
+        }
+      } catch (e: any) {
+        setError(e?.response?.data?.message || "予約一覧の取得に失敗しました。");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReservations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* =========================
+     3) 식당 정보 반영
+  ========================= */
+  useEffect(() => {
+    if (rows.length === 0) return;
+
+    setRows((prev) =>
+      prev.map((r) => {
+        const info = restaurantMap[r.restaurantId];
+        if (!info) return r;
+        return {
+          ...r,
+          restaurantName: info.name,
+          image: info.image,
+        };
+      })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [restaurantMap]);
+
+  /* =========================
+     Sorting & Pagination
+  ========================= */
+  const sorted = useMemo(
+    () => [...rows].sort((a, b) => (dtKey(a) < dtKey(b) ? 1 : -1)),
+    [rows]
+  );
+
   const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
   const visible = useMemo(
     () => sorted.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE),
     [sorted, page]
   );
 
-  const fallback =
-    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=400&fit=crop&q=60&auto=format";
+  useEffect(() => {
+    if (page > totalPages - 1) setPage(0);
+  }, [totalPages, page]);
+
+  /* =========================
+     4) 예약 취소
+  ========================= */
+  const cancelReservation = async (reservationId: number) => {
+    if (!window.confirm(`予約 #${reservationId} をキャンセルしますか？`)) return;
+
+    try {
+      await axiosApi.delete(`/reservations/${reservationId}`);
+      setRows((prev) =>
+        prev.map((r) =>
+          r.id === reservationId ? { ...r, status: "キャンセル" } : r
+        )
+      );
+      alert("キャンセルしました。");
+    } catch (e: any) {
+      alert(
+        e?.response?.data?.message ||
+          "キャンセルに失敗しました。(認証/権限/サーバー確認)"
+      );
+    }
+  };
+
+  /* =========================
+     Render
+  ========================= */
+  if (loading) return <p className="no-review-text">読み込み中...</p>;
+  if (error) return <p className="no-review-text">{error}</p>;
 
   return (
     <div className="restaurant-review-section">
@@ -105,7 +236,7 @@ const MyReservations: React.FC = () => {
                       navigate(`/restaurants/${rv.restaurantId}`);
                   }}
                 >
-                  {/* 왼쪽 컬럼: 썸네일 + 작성일 */}
+                  {/* Left */}
                   <div className="thumb-col">
                     <div className="bookmark-thumb">
                       <img
@@ -117,7 +248,7 @@ const MyReservations: React.FC = () => {
                     <span className="chip created-under">作成：{created}</span>
                   </div>
 
-                  {/* 본문 */}
+                  {/* Body */}
                   <div className="bookmark-info">
                     <div className="bookmark-header">
                       <h4 className="bookmark-name">{rv.restaurantName}</h4>
@@ -131,20 +262,13 @@ const MyReservations: React.FC = () => {
                       {rv.people}名
                     </p>
 
-                    {rv.request && rv.request.trim().length > 0 && (
-                      <p className="bookmark-detail" title={rv.request}>
-                        ✍️ リクエスト：{rv.request}
-                      </p>
-                    )}
-
-                    {/* 하단: 오른쪽 취소 버튼만 */}
                     <div className="reservation-footer">
                       {rv.status !== "キャンセル" && (
                         <button
                           className="btn-soft cancel-btn-inline"
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert(`予約 #${rv.id} をキャンセルします。`);
+                            cancelReservation(rv.id);
                           }}
                         >
                           予約を取り消す

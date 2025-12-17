@@ -1,83 +1,311 @@
+/* ===============================
+   Container
+================================ */
 .restaurant-form-container {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 920px;
+  margin: 28px auto;
+  padding: 28px 24px 40px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-.restaurant-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.restaurant-form-container h2 {
+  margin-bottom: 22px;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+  color: #111;
 }
 
-label {
-  font-weight: bold;
-  display: flex;
-  flex-direction: column;
-}
-
-input,
-textarea {
-  margin-top: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-}
-
-.submit-btn {
-  margin-top: 1rem;
-  padding: 0.8rem;
-  background-color: #ff6600;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.submit-btn:hover {
-  background-color: #ff6600;
-}
-
+/* ===============================
+   Loading / Error
+================================ */
 .loading,
 .error {
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 20px;
+  font-size: 14px;
 }
 
-/* ✅ 카테고리 선택 영역 스타일 추가 */
-.category-section {
-  margin-top: 1.5rem;
+.error {
+  color: #b42318;
 }
 
-.category-section p {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
+/* ===============================
+   Form base
+================================ */
+.restaurant-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.category-list {
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #222;
+}
+
+/* ===============================
+   Inputs
+================================ */
+input,
+textarea {
+  padding: 12px 14px;
+  font-size: 14px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  background: linear-gradient(#fff, #fafafa);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.15s ease;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #ff6600;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255, 102, 0, 0.18),
+    inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+/* ===============================
+   Grid rows
+================================ */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-row.full {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ===============================
+   Section cards
+================================ */
+.detail-section,
+.category-section,
+.hours-section {
+  margin-top: 6px;
+  padding: 18px 18px 16px;
+  border-radius: 16px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* ===============================
+   Section title (plain)
+================================ */
+.section-title {
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.2px;
+  padding: 0;
+  border: none;
+}
+
+.section-title::before,
+.section-title::after {
+  content: none;
+}
+
+/* ===============================
+   Category / Payment chips
+================================ */
+.category-list,
+.payment-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
 }
 
-.category-item {
-  display: flex;
+.category-item,
+.payment-item {
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 6px 10px;
-  background-color: #f9f9f9;
+  gap: 8px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
-.category-item:hover {
-  background-color: #eef;
-  border-color: #88a;
+.category-item:hover,
+.payment-item:hover {
+  border-color: #ff6600;
+  transform: translateY(-1px);
+}
+
+.category-item:has(input:checked),
+.payment-item:has(input:checked) {
+  border-color: #ff6600;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 102, 0, 0.18),
+    rgba(255, 102, 0, 0.08)
+  );
+  box-shadow: 0 0 0 1px rgba(255, 102, 0, 0.4),
+    0 4px 10px rgba(255, 102, 0, 0.25);
+}
+
+/* ===============================
+   Detail flags
+================================ */
+.detail-flags {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.detail-flags label {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 10px;
+  border-radius: 14px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  cursor: pointer;
+  font-weight: 900;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: all 0.15s ease;
+}
+
+.detail-flags label:hover {
+  transform: translateY(-1px);
+  border-color: #ff6600;
+}
+
+.detail-flags label:has(input:checked) {
+  border-color: #ff6600;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 102, 0, 0.22),
+    rgba(255, 102, 0, 0.1)
+  );
+  box-shadow: 0 6px 16px rgba(255, 102, 0, 0.35);
+}
+
+/* ===============================
+   Detail extra
+================================ */
+.detail-extra {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #e5e7eb;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ===============================
+   Payment spacing
+================================ */
+.detail-payments {
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.payment-item input[type="checkbox"] {
+  margin: 0;
+}
+
+/* ===============================
+   Hours table
+================================ */
+.hours-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.hours-table thead {
+  background: linear-gradient(#f9fafb, #f3f4f6);
+}
+
+.hours-table th,
+.hours-table td {
+  padding: 10px 8px;
+  font-size: 13px;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.hours-table th {
+  font-weight: 900;
+  color: #333;
+}
+
+.hours-table tr:last-child td {
+  border-bottom: none;
+}
+
+.hours-table input[type="time"] {
+  width: 100px;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+
+/* ===============================
+   Submit button
+================================ */
+.submit-btn {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ff7a18, #ff6600);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 900;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(255, 102, 0, 0.45);
+  transition: all 0.15s ease;
+}
+
+.submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(255, 102, 0, 0.55);
+}
+
+/* ===============================
+   Responsive
+================================ */
+@media (max-width: 720px) {
+  .form-row,
+  .form-row.full,
+  .detail-extra {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-flags {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

@@ -224,3 +224,38 @@
   font-size: 14px;
   margin-top: 4px;
 }
+
+.ranking-item .name {
+  text-align: center;
+  padding: 10px 12px 6px;
+}
+
+.ranking-item .subtext {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 12px 12px;
+}
+
+.ranking-item .badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #f3f3f3;
+  font-size: 12px;
+  color: #555;
+  line-height: 1;
+}
+
+/* 평점 배지 */
+.ranking-item .badge.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 노란 별 */
+.ranking-item .star {
+  color: #ffb400; /* ⭐️ 타베로그 느낌 노랑 */
+  font-size: 13px;
+  line-height: 1;
+}
