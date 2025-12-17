@@ -11,24 +11,20 @@ interface RestaurantFormData {
   description?: string;
 }
 
-/** ✅ 카테고리 타입 정의 */
 interface Category {
   id: number;
   name: string;
 }
 
-/** ✅ 요일 타입 (백엔드 enum과 동일하게) */
 type DayOfWeekType = "MON" | "TUE" | "WED" | "THU" | "FRI" | "SAT" | "SUN";
 
-/** ✅ 프론트 영업시간 폼 타입 */
 interface RestaurantHoursForm {
   dayOfWeek: DayOfWeekType;
-  openTime: string; // "HH:mm" (input type="time")
-  closeTime: string; // "HH:mm"
+  openTime: string;
+  closeTime: string;
   isOpen: boolean;
 }
 
-/** ✅ 초기 영업시간(월~일) */
 const INITIAL_HOURS: RestaurantHoursForm[] = [
   { dayOfWeek: "MON", openTime: "09:00", closeTime: "18:00", isOpen: true },
   { dayOfWeek: "TUE", openTime: "09:00", closeTime: "18:00", isOpen: true },
@@ -49,6 +45,46 @@ const DAY_LABELS: Record<DayOfWeekType, string> = {
   SUN: "日",
 };
 
+type PaymentMethodType = "CASH" | "CREDIT_CARD" | "E_MONEY" | "QR_PAY";
+
+interface RestaurantDetailFormData {
+  description: string;
+  privateRoom: boolean;
+  smoking: boolean;
+  unlimitDrink: boolean;
+  unlimitFood: boolean;
+  parkingArea: boolean;
+  seatCount: string;
+  averagePrice: string;
+  paymentMethods: PaymentMethodType[];
+}
+
+const INITIAL_DETAIL: RestaurantDetailFormData = {
+  description: "",
+  privateRoom: false,
+  smoking: false,
+  unlimitDrink: false,
+  unlimitFood: false,
+  parkingArea: false,
+  seatCount: "",
+  averagePrice: "",
+  paymentMethods: [],
+};
+
+const PAYMENT_METHOD_OPTIONS: PaymentMethodType[] = [
+  "CASH",
+  "CREDIT_CARD",
+  "E_MONEY",
+  "QR_PAY",
+];
+
+const PAYMENT_METHOD_LABEL: Record<PaymentMethodType, string> = {
+  CASH: "現金",
+  CREDIT_CARD: "クレジットカード",
+  E_MONEY: "電子マネー",
+  QR_PAY: "QR決済",
+};
+
 const RestaurantForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -62,209 +98,141 @@ const RestaurantForm: React.FC = () => {
     description: "",
   });
 
-  /** ✅ 카테고리 관련 상태 */
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
-
-  /** ✅ 영업시간 상태 */
   const [hours, setHours] = useState<RestaurantHoursForm[]>(INITIAL_HOURS);
-
+  const [detailData, setDetailData] =
+    useState<RestaurantDetailFormData>(INITIAL_DETAIL);
   const [loading, setLoading] = useState(isEditMode);
   const [error, setError] = useState<string | null>(null);
 
-  // ✅ 1. 카테고리 목록 불러오기
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await axiosApi.get("/categories");
-        setCategories(res.data);
-      } catch (err) {
-        console.error("카테고리 불러오기 실패:", err);
-      }
-    };
-    fetchCategories();
+    axiosApi.get("/categories").then((res) => setCategories(res.data));
   }, []);
 
-  // ✅ 2. 수정 모드: 레스토랑 기본 정보 불러오기
   useEffect(() => {
     if (!isEditMode) return;
-
-    const fetchRestaurant = async () => {
-      try {
-        const res = await axiosApi.get(`/restaurants/${id}`);
-        const { name, address, area, phone, description, categoryIds } =
-          res.data;
-
-        setFormData({ name, address, area, phone, description });
-
-        if (categoryIds && Array.isArray(categoryIds)) {
-          setSelectedCategories(categoryIds);
-        }
-      } catch (err) {
-        console.error("식당 데이터 로드 실패:", err);
-        setError("店舗情報の読み込みに失敗しました。");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRestaurant();
+    axiosApi.get(`/restaurants/${id}`).then((res) => {
+      const { name, address, area, phone, description, categoryIds } = res.data;
+      setFormData({ name, address, area, phone, description });
+      setSelectedCategories(categoryIds || []);
+      setLoading(false);
+    });
   }, [id, isEditMode]);
 
-  // ✅ 3. 수정 모드: 영업시간 불러오기 (GET /hours)
   useEffect(() => {
     if (!isEditMode || !id) return;
-
-    const fetchHours = async () => {
-      try {
-        const res = await axiosApi.get(`/restaurants/${id}/hours`);
-        const serverHours = res.data as Array<{
-          dayOfWeek: DayOfWeekType;
-          openTime: string | null;
-          closeTime: string | null;
-          isOpen: boolean;
-        }>;
-
-        // 서버 응답(HH:mm:ss)을 프론트(HH:mm)로 맞추기
-        setHours((prev) =>
-          prev.map((h) => {
-            const found = serverHours.find((x) => x.dayOfWeek === h.dayOfWeek);
-            if (!found) return h;
-
-            return {
-              ...h,
-              openTime: found.openTime ? found.openTime.slice(0, 5) : "",
-              closeTime: found.closeTime ? found.closeTime.slice(0, 5) : "",
-              isOpen: found.isOpen,
-            };
-          })
-        );
-      } catch (err) {
-        console.error("영업시간 로드 실패:", err);
-        // 영업시간이 아직 세팅되지 않은 가게일 수도 있으니 여기선 에러를 띄우지 않아도 됨
-      }
-    };
-
-    fetchHours();
+    axiosApi.get(`/restaurants/${id}/hours`).then((res) => {
+      setHours((prev) =>
+        prev.map((h) => {
+          const found = res.data.find((x: any) => x.dayOfWeek === h.dayOfWeek);
+          return found
+            ? {
+                ...h,
+                openTime: found.openTime?.slice(0, 5) || "",
+                closeTime: found.closeTime?.slice(0, 5) || "",
+                isOpen: found.isOpen,
+              }
+            : h;
+        })
+      );
+    });
   }, [id, isEditMode]);
 
-  // ✅ 입력값 변경 핸들러
+  useEffect(() => {
+    if (!isEditMode || !id) return;
+    axiosApi.get(`/restaurants/${id}/detail`).then((res) => {
+      setDetailData({
+        description: res.data.description ?? "",
+        privateRoom: !!res.data.privateRoom,
+        smoking: !!res.data.smoking,
+        unlimitDrink: !!res.data.unlimitDrink,
+        unlimitFood: !!res.data.unlimitFood,
+        parkingArea: !!res.data.parkingArea,
+        seatCount: res.data.seatCount ? String(res.data.seatCount) : "",
+        averagePrice: res.data.averagePrice ?? "",
+        paymentMethods: res.data.paymentMethods ?? [],
+      });
+    });
+  }, [id, isEditMode]);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  ) => setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
 
-  // ✅ 카테고리 체크박스 핸들러
-  const handleCategoryChange = (categoryId: number) => {
-    setSelectedCategories((prev) =>
-      prev.includes(categoryId)
-        ? prev.filter((x) => x !== categoryId)
-        : [...prev, categoryId]
+  const handleDetailChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => setDetailData((p) => ({ ...p, [e.target.name]: e.target.value }));
+
+  const toggleCategory = (id: number) =>
+    setSelectedCategories((p) =>
+      p.includes(id) ? p.filter((x) => x !== id) : [...p, id]
     );
-  };
 
-  // ✅ 영업시간 변경 핸들러
-  const handleHoursChange = (
-    dayOfWeek: DayOfWeekType,
-    field: "openTime" | "closeTime" | "isOpen",
-    value: string | boolean
-  ) => {
-    setHours((prev) =>
-      prev.map((h) =>
-        h.dayOfWeek === dayOfWeek ? { ...h, [field]: value } : h
-      )
+  const togglePayment = (m: PaymentMethodType) =>
+    setDetailData((p) => ({
+      ...p,
+      paymentMethods: p.paymentMethods.includes(m)
+        ? p.paymentMethods.filter((x) => x !== m)
+        : [...p.paymentMethods, m],
+    }));
+
+  const toggleHour = (
+    day: DayOfWeekType,
+    key: keyof RestaurantHoursForm,
+    value: any
+  ) =>
+    setHours((p) =>
+      p.map((h) => (h.dayOfWeek === day ? { ...h, [key]: value } : h))
     );
-  };
 
-  // ✅ "HH:mm" -> "HH:mm:00" / 빈 값 -> null
-  const toTimeWithSecondsOrNull = (time: string): string | null => {
-    if (!time) return null;
-    if (time.length === 8) return time; // 이미 HH:mm:ss면 그대로
-    return `${time}:00`;
-  };
+  const toTime = (t: string) => (t ? `${t}:00` : null);
 
-  // ✅ 영업시간 간단 검증 (영업 체크인데 시간 비어있으면 막기)
-  const validateHours = (): boolean => {
-    for (const h of hours) {
-      if (h.isOpen) {
-        if (!h.openTime || !h.closeTime) {
-          alert(`${DAY_LABELS[h.dayOfWeek]}曜日の営業時間を入力してください。`);
-          return false;
-        }
-        if (h.openTime >= h.closeTime) {
-          alert(
-            `${
-              DAY_LABELS[h.dayOfWeek]
-            }曜日の閉店時間は開店時間より後にしてください。`
-          );
-          return false;
-        }
-      }
-    }
-    return true;
-  };
-
-  // ✅ 등록 / 수정 요청
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
 
-    if (!validateHours()) return;
-
-    const requestData = {
+    const restaurantPayload = {
       ...formData,
       categoryIds: selectedCategories,
     };
 
+    const detailPayload = {
+      ...detailData,
+      seatCount: detailData.seatCount ? Number(detailData.seatCount) : null,
+    };
+
     try {
       if (isEditMode && id) {
-        // 1) 기본 정보 수정
-        await axiosApi.put(`/restaurants/${id}`, requestData);
-
-        // 2) 영업시간 수정 (요일별 PUT)
-        const payload = hours.map((h) => ({
-          dayOfWeek: h.dayOfWeek,
-          openTime: h.isOpen ? toTimeWithSecondsOrNull(h.openTime) : null,
-          closeTime: h.isOpen ? toTimeWithSecondsOrNull(h.closeTime) : null,
-          isOpen: h.isOpen,
-        }));
+        await axiosApi.put(`/restaurants/${id}`, restaurantPayload);
+        await axiosApi.put(`/restaurants/${id}/detail`, detailPayload);
 
         await Promise.all(
-          payload.map((p) =>
-            axiosApi.put(`/restaurants/${id}/hours/${p.dayOfWeek}`, p)
+          hours.map((h) =>
+            axiosApi.put(`/restaurants/${id}/hours/${h.dayOfWeek}`, {
+              dayOfWeek: h.dayOfWeek,
+              isOpen: h.isOpen,
+              openTime: h.isOpen ? toTime(h.openTime) : null,
+              closeTime: h.isOpen ? toTime(h.closeTime) : null,
+            })
           )
         );
-
-        alert("店舗情報を更新しました。");
       } else {
-        // 1) 레스토랑 등록 (응답에서 id 필요)
-        const res = await axiosApi.post("/restaurants", requestData);
+        const res = await axiosApi.post("/restaurants", restaurantPayload);
+        const newId = res.data.id;
 
-        // ⚠️ 여기 응답 구조가 다르면 맞춰서 수정해야 함
-        const newRestaurantId: number = res.data?.id;
-
-        if (!newRestaurantId) {
-          throw new Error("레스토랑 생성 응답에서 id를 찾을 수 없습니다.");
-        }
-
-        // 2) 영업시간 초기 세팅 (POST /hours)
-        const payload = hours.map((h) => ({
-          dayOfWeek: h.dayOfWeek,
-          openTime: h.isOpen ? toTimeWithSecondsOrNull(h.openTime) : null,
-          closeTime: h.isOpen ? toTimeWithSecondsOrNull(h.closeTime) : null,
-          isOpen: h.isOpen,
-        }));
-
-        await axiosApi.post(`/restaurants/${newRestaurantId}/hours`, payload);
-
-        alert("新しいレストランを登録しました。");
+        await axiosApi.post(`/restaurants/${newId}/detail`, detailPayload);
+        await axiosApi.post(
+          `/restaurants/${newId}/hours`,
+          hours.map((h) => ({
+            dayOfWeek: h.dayOfWeek,
+            isOpen: h.isOpen,
+            openTime: h.isOpen ? toTime(h.openTime) : null,
+            closeTime: h.isOpen ? toTime(h.closeTime) : null,
+          }))
+        );
       }
-
       navigate("/restaurants");
-    } catch (err) {
-      console.error("요청 실패:", err);
+    } catch {
       setError("データの送信に失敗しました。");
     }
   };
@@ -276,90 +244,141 @@ const RestaurantForm: React.FC = () => {
     <div className="restaurant-form-container">
       <h2>{isEditMode ? "店舗情報の編集" : "新しいレストランを登録"}</h2>
 
-      <form onSubmit={handleSubmit} className="restaurant-form">
-        <label>
-          店舗名
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </label>
+      <form className="restaurant-form" onSubmit={handleSubmit}>
+        <div className="form-row">
+          <label>
+            店舗名
+            <input name="name" value={formData.name} onChange={handleChange} />
+          </label>
+          <label>
+            電話番号
+            <input
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
 
-        <label>
-          住所
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            required
-          />
-        </label>
+        <div className="form-row">
+          <label>
+            エリア
+            <input name="area" value={formData.area} onChange={handleChange} />
+          </label>
+          <label>
+            住所
+            <input
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
 
-        <label>
-          エリア（地域）
-          <input
-            type="text"
-            name="area"
-            value={formData.area}
-            onChange={handleChange}
-            placeholder="例: 大邱広域市"
-            required
-          />
-        </label>
+        <div className="form-row full">
+          <label>
+            説明
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows={3}
+            />
+          </label>
+          <label>
+            紹介文
+            <textarea
+              name="description"
+              value={detailData.description}
+              onChange={handleDetailChange}
+              rows={3}
+            />
+          </label>
+        </div>
 
-        <label>
-          電話番号
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-          />
-        </label>
+        <div className="detail-section">
+          <div className="detail-flags">
+            {[
+              ["privateRoom", "個室"],
+              ["smoking", "喫煙"],
+              ["unlimitDrink", "飲み放題"],
+              ["unlimitFood", "食べ放題"],
+              ["parkingArea", "駐車場"],
+            ].map(([k, l]) => (
+              <label key={k}>
+                <input
+                  type="checkbox"
+                  checked={(detailData as any)[k]}
+                  onChange={(e) =>
+                    setDetailData((p) => ({ ...p, [k]: e.target.checked }))
+                  }
+                />
+                {l}
+              </label>
+            ))}
+          </div>
 
-        <label>
-          説明
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            rows={4}
-          />
-        </label>
+          <div className="detail-extra">
+            <label>
+              席数
+              <input
+                type="number"
+                name="seatCount"
+                value={detailData.seatCount}
+                onChange={handleDetailChange}
+              />
+            </label>
+            <label>
+              平均予算
+              <input
+                name="averagePrice"
+                value={detailData.averagePrice}
+                onChange={handleDetailChange}
+              />
+            </label>
+          </div>
 
-        {/* ✅ 카테고리 선택 */}
-        <div className="category-section">
-          <p>カテゴリー選択</p>
-          <div className="category-list">
-            {Array.isArray(categories) &&
-              categories.map((cat) => (
-                <label key={cat.id} className="category-item">
+          <div className="detail-payments">
+            <div className="payment-list">
+              {PAYMENT_METHOD_OPTIONS.map((m) => (
+                <label key={m} className="payment-item">
                   <input
                     type="checkbox"
-                    checked={selectedCategories.includes(cat.id)}
-                    onChange={() => handleCategoryChange(cat.id)}
+                    checked={detailData.paymentMethods.includes(m)}
+                    onChange={() => togglePayment(m)}
                   />
-                  {cat.name}
+                  {PAYMENT_METHOD_LABEL[m]}
                 </label>
               ))}
+            </div>
           </div>
         </div>
 
-        {/* ✅ 요일별 영업시간 설정 */}
-        <div className="hours-section">
-          <p>営業時間の設定</p>
+        <div className="category-section">
+          <p className="section-title">カテゴリー</p>
 
+          <div className="category-list">
+            {categories.map((c) => (
+              <label key={c.id} className="category-item">
+                <input
+                  type="checkbox"
+                  checked={selectedCategories.includes(c.id)}
+                  onChange={() => toggleCategory(c.id)}
+                />
+                {c.name}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="hours-section">
           <table className="hours-table">
             <thead>
               <tr>
-                <th>曜日</th>
-                <th>営業</th>
-                <th>開店</th>
-                <th>閉店</th>
+                <th>曜</th>
+                <th>営</th>
+                <th>開</th>
+                <th>閉</th>
               </tr>
             </thead>
             <tbody>
@@ -371,11 +390,7 @@ const RestaurantForm: React.FC = () => {
                       type="checkbox"
                       checked={h.isOpen}
                       onChange={(e) =>
-                        handleHoursChange(
-                          h.dayOfWeek,
-                          "isOpen",
-                          e.target.checked
-                        )
+                        toggleHour(h.dayOfWeek, "isOpen", e.target.checked)
                       }
                     />
                   </td>
@@ -385,11 +400,7 @@ const RestaurantForm: React.FC = () => {
                       value={h.openTime}
                       disabled={!h.isOpen}
                       onChange={(e) =>
-                        handleHoursChange(
-                          h.dayOfWeek,
-                          "openTime",
-                          e.target.value
-                        )
+                        toggleHour(h.dayOfWeek, "openTime", e.target.value)
                       }
                     />
                   </td>
@@ -399,11 +410,7 @@ const RestaurantForm: React.FC = () => {
                       value={h.closeTime}
                       disabled={!h.isOpen}
                       onChange={(e) =>
-                        handleHoursChange(
-                          h.dayOfWeek,
-                          "closeTime",
-                          e.target.value
-                        )
+                        toggleHour(h.dayOfWeek, "closeTime", e.target.value)
                       }
                     />
                   </td>
@@ -413,9 +420,7 @@ const RestaurantForm: React.FC = () => {
           </table>
         </div>
 
-        <button type="submit" className="submit-btn">
-          {isEditMode ? "更新する" : "登録する"}
-        </button>
+        <button className="submit-btn">{isEditMode ? "更新" : "登録"}</button>
       </form>
     </div>
   );

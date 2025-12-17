@@ -11,6 +11,19 @@ interface RestaurantHoursResponse {
   isOpen: boolean;
 }
 
+/** ✅ RestaurantDetail 응답(백엔드 detail 구조에 맞춰 확장) */
+interface RestaurantDetailResponse {
+  description?: string | null;
+  privateRoom?: boolean;
+  smoking?: boolean;
+  unlimitDrink?: boolean;
+  unlimitFood?: boolean;
+  parkingArea?: boolean;
+  seatCount?: number | null;
+  averagePrice?: string | null;
+  paymentMethods?: string[]; // enum 문자열들 (e.g., "CASH", "QR_PAY" ...)
+}
+
 interface Props {
   restaurant: {
     id: number; // ✅ 영업시간 조회용으로 필요
@@ -18,8 +31,16 @@ interface Props {
     categoryNames?: string[];
     phone?: string;
     address: string;
-    description?: string;
+
+    /** ✅ 이제 소개문은 detail.description을 사용 */
+    // description?: string;
+
+    /** ✅ 백엔드에서 내려주는 detail */
+    detail?: RestaurantDetailResponse | null;
+
+    /** ✅ 더미 유지(요청대로) */
     reservationAvailable?: boolean;
+    website?: string;
 
     // ✅ 기존 임시 필드들은 fallback 용도로 유지 가능
     openHours?: string[];
@@ -29,7 +50,6 @@ interface Props {
     smokingArea?: boolean;
     paymentMethods?: string[];
     holiday?: string;
-    website?: string;
   };
 }
 
@@ -55,15 +75,11 @@ const DAY_LABELS: Record<DayOfWeekType, string> = {
 
 function toHHmm(time: string | null | undefined) {
   if (!time) return "";
-  return time.slice(0, 5); // "09:00:00" -> "09:00"
+  return time.slice(0, 5);
 }
 
 /**
  * ✅ 요일별 영업시간을 사람이 읽기 좋게 묶어서 출력
- * 예)
- * - 月〜金 09:00〜18:00
- * - 土 10:00〜20:00
- * - 日 休み
  */
 function groupBusinessHours(hours: RestaurantHoursResponse[]): string[] {
   if (!hours.length) return [];
@@ -71,20 +87,15 @@ function groupBusinessHours(hours: RestaurantHoursResponse[]): string[] {
   const map = new Map<DayOfWeekType, RestaurantHoursResponse>();
   hours.forEach((h) => map.set(h.dayOfWeek, h));
 
-  // 요일별 "상태 키" 만들기
   const states = ORDER.map((dow) => {
     const h = map.get(dow);
 
-    if (!h || !h.isOpen) {
-      return { dow, key: "CLOSED" };
-    }
+    if (!h || !h.isOpen) return { dow, key: "CLOSED" };
 
     const open = toHHmm(h.openTime);
     const close = toHHmm(h.closeTime);
 
-    if (!open || !close) {
-      return { dow, key: "OPEN|未設定" };
-    }
+    if (!open || !close) return { dow, key: "OPEN|未設定" };
 
     return { dow, key: `OPEN|${open}〜${close}` };
   });
@@ -97,7 +108,6 @@ function groupBusinessHours(hours: RestaurantHoursResponse[]): string[] {
 
     const days = buffer.map((b) => b.dow);
 
-    // 연속 요일이면 月〜金 형태로
     const isContinuous =
       days.length > 1 &&
       ORDER.indexOf(days[days.length - 1]) - ORDER.indexOf(days[0]) ===
@@ -109,9 +119,8 @@ function groupBusinessHours(hours: RestaurantHoursResponse[]): string[] {
 
     const key = buffer[0].key;
 
-    if (key === "CLOSED") {
-      result.push(`${dayText} 休み`);
-    } else if (key.startsWith("OPEN|")) {
+    if (key === "CLOSED") result.push(`${dayText} 休み`);
+    else if (key.startsWith("OPEN|")) {
       const time = key.replace("OPEN|", "");
       result.push(`${dayText} ${time}`);
     }
@@ -120,13 +129,11 @@ function groupBusinessHours(hours: RestaurantHoursResponse[]): string[] {
   };
 
   states.forEach((s, idx) => {
-    if (buffer.length === 0 || buffer[0].key === s.key) {
-      buffer.push(s);
-    } else {
+    if (buffer.length === 0 || buffer[0].key === s.key) buffer.push(s);
+    else {
       flush();
       buffer.push(s);
     }
-
     if (idx === states.length - 1) flush();
   });
 
@@ -135,8 +142,6 @@ function groupBusinessHours(hours: RestaurantHoursResponse[]): string[] {
 
 /**
  * ✅ 정기휴무 문자열 만들기
- * - CLOSED 요일만 모아서 "月・火" 형태로 표시
- * - 없으면 "なし"
  */
 function buildHolidayText(hours: RestaurantHoursResponse[]): string {
   const closedDays = ORDER.filter((dow) => {
@@ -148,6 +153,22 @@ function buildHolidayText(hours: RestaurantHoursResponse[]): string {
   if (closedDays.length === 7) return "毎日休み";
 
   return closedDays.map((d) => DAY_LABELS[d]).join("・");
+}
+
+/** ✅ paymentMethods enum 문자열 → 화면 표시용 변환 (원하면 매핑 더 늘려도 됨) */
+function renderPaymentMethods(methods?: string[] | null) {
+  if (!methods || methods.length === 0) return null;
+
+  const labelMap: Record<string, string> = {
+    CASH: "現金",
+    CREDIT_CARD: "クレジットカード",
+    E_MONEY: "電子マネー",
+    QR_PAY: "QR決済",
+    BANK_TRANSFER: "振込",
+    OTHER: "その他",
+  };
+
+  return methods.map((m) => labelMap[m] ?? m).join(" / ");
 }
 
 const RestaurantMain: React.FC<Props> = ({ restaurant }) => {
@@ -170,17 +191,43 @@ const RestaurantMain: React.FC<Props> = ({ restaurant }) => {
     fetchHours();
   }, [restaurant?.id]);
 
-  // ✅ 영업시간 묶음 출력 (실데이터 우선)
   const groupedOpenHours = useMemo(() => {
     if (!hours || hours.length === 0) return null;
     return groupBusinessHours(hours);
   }, [hours]);
 
-  // ✅ 정기휴무 출력
   const holidayView = useMemo(() => {
     if (!hours || hours.length === 0) return null;
     return buildHolidayText(hours);
   }, [hours]);
+
+  /** ✅ detail 우선 값들(없으면 기존 임시 필드 fallback) */
+  const detail = restaurant.detail ?? null;
+
+  const seatCountView = detail?.seatCount ?? restaurant.seatCount ?? null;
+
+  const averagePriceView =
+    detail?.averagePrice ?? restaurant.averagePrice ?? null;
+
+  const parkingView =
+    detail?.parkingArea !== undefined
+      ? detail.parkingArea
+      : restaurant.parkingAvailable;
+
+  const smokingView =
+    detail?.smoking !== undefined ? detail.smoking : restaurant.smokingArea;
+
+  const paymentMethodsView =
+    (detail?.paymentMethods && detail.paymentMethods.length > 0
+      ? renderPaymentMethods(detail.paymentMethods)
+      : null) ??
+    (restaurant.paymentMethods && restaurant.paymentMethods.length > 0
+      ? restaurant.paymentMethods.join(" / ")
+      : null);
+
+  const descriptionView = detail?.description?.trim()
+    ? detail.description
+    : "紹介文が登録されていません。";
 
   return (
     <div className="restaurant-info-section">
@@ -236,14 +283,12 @@ const RestaurantMain: React.FC<Props> = ({ restaurant }) => {
                   ))}
                 </ul>
               ) : restaurant.openHours?.length ? (
-                // ✅ fallback: 기존 임시 데이터
                 <ul className="open-hours">
                   {restaurant.openHours.map((hour, i) => (
                     <li key={i}>{hour}</li>
                   ))}
                 </ul>
               ) : (
-                // ✅ fallback: 하드코딩 기본값
                 <ul className="open-hours">
                   <li>月〜金 11:30〜22:00</li>
                   <li>土日祝 12:00〜21:30</li>
@@ -259,43 +304,39 @@ const RestaurantMain: React.FC<Props> = ({ restaurant }) => {
 
           <tr>
             <th>座席数</th>
-            <td>{restaurant.seatCount ?? 40}席</td>
+            <td>{seatCountView !== null ? `${seatCountView}席` : "未設定"}</td>
           </tr>
 
           <tr>
             <th>平均予算</th>
-            <td>{restaurant.averagePrice ?? "¥3,000〜¥5,000"}</td>
+            <td>{averagePriceView ?? "未設定"}</td>
           </tr>
 
           <tr>
             <th>駐車場</th>
             <td>
-              {restaurant.parkingAvailable !== undefined
-                ? restaurant.parkingAvailable
+              {parkingView !== undefined
+                ? parkingView
                   ? "あり"
                   : "なし"
-                : "なし"}
+                : "未設定"}
             </td>
           </tr>
 
           <tr>
             <th>喫煙可否</th>
             <td>
-              {restaurant.smokingArea !== undefined
-                ? restaurant.smokingArea
+              {smokingView !== undefined
+                ? smokingView
                   ? "喫煙可"
                   : "全席禁煙"
-                : "全席禁煙"}
+                : "未設定"}
             </td>
           </tr>
 
           <tr>
             <th>支払い方法</th>
-            <td>
-              {restaurant.paymentMethods?.length
-                ? restaurant.paymentMethods.join(" / ")
-                : "現金 / クレジットカード / 電子マネー"}
-            </td>
+            <td>{paymentMethodsView ?? "未設定"}</td>
           </tr>
 
           <tr>
@@ -318,11 +359,7 @@ const RestaurantMain: React.FC<Props> = ({ restaurant }) => {
 
           <tr>
             <th>紹介文</th>
-            <td>
-              {restaurant.description?.trim()
-                ? restaurant.description
-                : "紹介文が登録されていません。"}
-            </td>
+            <td>{descriptionView}</td>
           </tr>
         </tbody>
       </table>
