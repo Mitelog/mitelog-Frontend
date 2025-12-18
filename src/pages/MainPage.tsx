@@ -118,6 +118,7 @@ const MainPage: React.FC = () => {
   const [popular, setPopular] = useState<Restaurant[] | null>(null);
   const [fresh, setFresh] = useState<Restaurant[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [q, setQ] = useState("");
 
   useEffect(() => {
     const fetchMain = async () => {
@@ -161,12 +162,21 @@ const MainPage: React.FC = () => {
             className="search-bar"
             onSubmit={(e) => {
               e.preventDefault();
-              navigate("/restaurants");
+              const keyword = q.trim();
+
+              if (!keyword) {
+                navigate("/restaurants");
+                return;
+              }
+
+              navigate(`/restaurants?keyword=${encodeURIComponent(keyword)}`);
             }}
           >
             <input
               name="q"
               type="text"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
               placeholder="店名を入力してください"
               className="search-input"
             />
