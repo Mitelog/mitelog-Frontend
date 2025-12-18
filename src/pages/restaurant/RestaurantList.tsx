@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axiosApi from "../../api/axiosApi";
 import FilterSidebar, {
   RestaurantListFilters,
@@ -172,6 +172,8 @@ interface Restaurant {
 
 const RestaurantList: React.FC = () => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const [searchParams] = useSearchParams();
+  const keywordFromUrl = (searchParams.get("keyword") ?? "").trim();
 
   // ✅ 서버 DTO 키와 동일한 filters
   const [filters, setFilters] = useState<RestaurantListFilters>({
@@ -179,6 +181,16 @@ const RestaurantList: React.FC = () => {
     area: "",
     category: "",
   });
+
+  // ✅ URL의 keyword를 filters.keyword에 반영 (메인 검색 연동)
+  useEffect(() => {
+    if (keywordFromUrl === filters.keyword) return;
+
+    setFilters((cur) => ({
+      ...cur,
+      keyword: keywordFromUrl,
+    }));
+  }, [keywordFromUrl]);
 
   // ✅ 페이징
   const [page, setPage] = useState(0); // 0-based
