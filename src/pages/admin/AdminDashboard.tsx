@@ -48,15 +48,40 @@ export default function AdminDashboard() {
         console.log("📡 Restaurants Response:", r);
         console.log("📡 Reviews Response:", rv);
 
+        /**
+         * ✅ axios Response / res.data / JSON 문자열
+         *    모든 케이스를 통일 처리
+         */
+        const parseIfString = (v: any) => {
+          if (typeof v !== "string") return v;
+          try {
+            return JSON.parse(v);
+          } catch {
+            return null;
+          }
+        };
+
+        const unwrap = (resOrBody: any) => {
+          const body = resOrBody?.data ?? resOrBody; // axios Response → body
+          return parseIfString(body); // string이면 JSON.parse
+        };
+
+        const totalElements = (x: any) => {
+          const body = unwrap(x); // { status, msg, data }
+          return body?.data?.totalElements ?? 0;
+        };
+
         setStats({
-          members: m.data.data.totalElements,
-          restaurants: r.data.data.totalElements,
-          reviews: rv.data.data.totalElements,
+          members: totalElements(m),
+          restaurants: totalElements(r),
+          reviews: totalElements(rv),
         });
       } catch (err) {
         console.error("❌ API 요청 실패:", err);
+        setStats({ members: 0, restaurants: 0, reviews: 0 });
       }
     };
+
     loadStats();
   }, []);
 
