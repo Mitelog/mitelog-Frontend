@@ -26,19 +26,47 @@ export default function AdminRestaurants() {
   const [type, setType] = useState("name");
   const navigate = useNavigate();
 
+  /**
+   * ✅ axios Response / res.data / JSON 문자열
+   *    모든 케이스 통일 처리
+   */
+  const parseIfString = (v: any) => {
+    if (typeof v !== "string") return v;
+    try {
+      return JSON.parse(v);
+    } catch (e) {
+      console.error("❌ JSON.parse 실패:", e);
+      return null;
+    }
+  };
+
+  const unwrap = (resOrBody: any) => {
+    const body = resOrBody?.data ?? resOrBody; // axios Response -> body
+    return parseIfString(body); // string이면 JSON.parse
+  };
+
   const loadData = async () => {
     try {
       const res = await getAllRestaurants({ page, size: 10, type, keyword });
-      const { content, totalPages } = res.data.data;
+
+      // ✅ body: {status,msg,data:{content,totalPages,totalElements...}}
+      const body = unwrap(res);
+
+      const content = body?.data?.content ?? [];
+      const tp = body?.data?.totalPages ?? 0;
+
       setRestaurants(content);
-      setTotalPages(totalPages);
+      setTotalPages(tp);
     } catch (err) {
       console.error("식당 목록 불러오기 실패:", err);
+      setRestaurants([]);
+      setTotalPages(0);
     }
   };
 
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const handleSearch = () => {
@@ -48,8 +76,12 @@ export default function AdminRestaurants() {
 
   const handleDelete = async (id: number) => {
     if (!window.confirm("식당을 삭제하시겠습니까?")) return;
-    await deleteRestaurant(id);
-    loadData();
+    try {
+      await deleteRestaurant(id);
+      loadData();
+    } catch (err) {
+      console.error("식당 삭제 실패:", err);
+    }
   };
 
   return (
